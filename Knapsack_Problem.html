@@ -1,0 +1,159 @@
+<html>
+    <head
+        <style>
+        tbody {
+            font-family: "Lucida Console", Monaco, monospace;
+        }
+        td {
+            min-width:75px;
+        }
+        </style>
+    </head>
+    <body>
+        <div id="bestest"></div>
+    </body>
+    <script>
+function sortTable(tbl, colNum, descend){
+    var store = [];
+    for(var i=0, len=tbl.rows.length; i<len; i++){
+        var row = tbl.rows[i];
+        var sortnr = parseFloat(row.cells[colNum].textContent || row.cells[colNum].innerText);
+        if(!isNaN(sortnr)) store.push([sortnr, row]);
+    }
+    store.sort(function(x,y){
+        if(descend){
+            return y[0] - x[0];
+        } else {
+            return x[0] - y[0];
+        }
+    });
+    for(var i=0, len=store.length; i<len; i++){
+        tbl.appendChild(store[i][1]);
+    }
+    store = null;
+}
+    var Items = [
+        {"value":3, "weight":12, "count":1, "name":"a"},
+        {"value":4, "weight":3, "count":2, "name":"b"},
+        {"value":8, "weight":5, "count":3, "name":"c"},
+        {"value":13, "weight":12, "count":2, "name":"d"},
+        {"value":33, "weight":1, "count":3, "name":"e"},
+        {"value":6, "weight":7, "count":2, "name":"f"},
+        {"value":5, "weight":12, "count":3, "name":"g"},
+        {"value":1, "weight":1, "count":2, "name":"h"}
+    ]
+    function getTotalCount(items){
+        var length = items.length; 
+        var count = 0;
+        for(var i = 0; i < length; i++){
+            count += items[i].count;
+        }
+        return count;
+    }
+    function getNumberOfComparisons(numOfItems){
+        return Math.pow(2, numOfItems);
+    }
+    function dec2bin(dec){
+        return (dec >>> 0).toString(2);
+    }
+    function getTotalXofItems(items, ItemsBinaryString, type){
+        var length = ItemsBinaryString.length;
+        var returnValue = 0;
+        for(var i = 0; i < length; i++){
+            var currentItemPos = ItemsBinaryString.substring(i, i+1);
+            if(currentItemPos == "1"){
+                var currentItem = returnItemFromPosition(items, i);
+                returnValue += currentItem[type];
+            } else if(type == "name") {
+                returnValue += "_";
+            }
+        }
+        return returnValue;
+    }
+
+function reverseString(str) {
+    return str.split("").reverse().join("");
+}
+    function getRankingOfEfficiency(itemsOld){
+        var items = JSON.parse(JSON.stringify(itemsOld))
+        items.sort(function(obja, objb){
+            return (objb.value / objb.weight) - (obja.value / obja.weight );
+        });
+        return items;
+    }
+    function howManyCanGrab(item, maxWeight, currentWeight){
+        return Math.min(Math.floor((maxWeight-currentWeight)/item.weight), item.count);
+    }
+    function quickFind(items, maxWeight, outputNode){
+        var best = getRankingOfEfficiency(items);
+        var currentWeight = 0;
+        var value = 0;
+        var coolThing = "0_";
+        for(var i = 0; i < best.length; i++){
+            var thisRunCount = howManyCanGrab(best[i], maxWeight, currentWeight);
+            for(var j = 0; j < best[i].count; j++){
+                if(j < thisRunCount){
+                    coolThing+=best[i].name;
+                } else {
+                    coolThing+="_"
+                }
+            }
+            currentWeight += thisRunCount * best[i].weight;
+            value += thisRunCount * best[i].value;
+        }
+        outputNode.innerHTML = "<table><tr><th>Weight</th><th>Value</th><th>ID</th></tr><td>"+currentWeight+"</td><td>"+value+"</td><td>"+coolThing+"</td></table>"
+    }
+    
+    function returnItemFromPosition(items, position){
+        var item = 0;
+        while(position > 0){
+            position -= items[item].count;
+            if(position <= 0){
+                position = 0;
+                
+            } else {
+                item++;
+            }
+        }
+        return items[item];
+    }
+    function pad(n, width, z) {
+        z = z || '0';
+        n = n + '';
+        return n.length >= width ? n : new Array(width - n.length + 1).join(z) + n;
+    }
+    function doLongComparisons(items, maxWeight, hide){
+        var table = document.createElement("table"); table.class="sortable";
+        table.innerHTML += "<tr><th>Weight</th><th>Value</th><th>ID</th>"
+        var tableBody = document.createElement("tbody");
+        var comparisons = getNumberOfComparisons(getTotalCount(items));
+        var start = comparisons / 2;
+        for(var i = 0; i < comparisons; i++){
+            var itemsToChoose = pad(parseInt(dec2bin(i)), getTotalCount(items));
+            
+            var itemLength = itemsToChoose.length;
+            var totalWeight = getTotalXofItems(items, "0"+itemsToChoose, "weight")
+            var totalValue = getTotalXofItems(items, "0"+itemsToChoose, "value")
+            var name = getTotalXofItems(items, "0"+itemsToChoose, "name")
+            var currentRow = document.createElement("tr"); currentRow.id = i;
+            currentRow.innerHTML = "<td class='weight'>"+totalWeight+"</td><td class='value'>"+totalValue+"</td><td class='identification'>"+name+"</td>"
+            if(totalWeight > maxWeight){
+                if(!hide){
+                    currentRow.style.background = "red";
+                    tableBody.appendChild(currentRow);
+                }
+            } else {
+                tableBody.appendChild(currentRow);
+            }
+        }
+        sortTable(tableBody, 1, true);
+        table.appendChild(tableBody);
+        document.body.appendChild(table);
+    }
+    quickFind(Items, 20, document.getElementById("bestest"));
+    doLongComparisons(Items, 20, true);
+    
+    //console.log(getTotalXofItems(Items, "01", "value"))
+    //console.log(getNumberOfComparisons(getTotalCount(Items)));
+    </script>
+</html>

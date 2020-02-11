@@ -1,0 +1,278 @@
+<html>
+	<head>
+		<script src="jquery.js"></script>
+		<script>
+// This is some Shit Code be warned
+// I don't know how you fancy fuckers do it but this is how I do it
+	// Id like to thank my parents
+	// Without their pressure I would be playing this game instead of making stuff
+		// A little bit about how this works, or is SUPPOSED to work
+		// I have no idea if it works in the way that I want it to, but it gives me the results I want
+		// It downloads a file from Riot that lists all current champions
+		// Writes down some information, but most of it is unused
+		// Then because Riot doesn't want just one big file
+		// I have to do some shit in a loop and download all of the other pages
+		// The download size is like (champions*20KB) + BigList
+		// Almost all of the other data is unused
+		// This also causes the webpage to take a while to load
+		// But it makes it so I don't need to use my API key at all
+		// Now with all the info it downloaded it does whatever I made it do
+		// Because at the time I wrote this not it doesnt do much
+			// These are some pretty important variables because without these
+			// being here javascript would just shit all over me
+			// Why cant we have var.global someshithere=3;
+			
+			// Wow you guessed it this is the version that this whole shitfest runs off of
+			// if I'm too lazy to change it and you are reading this, feel free to change it
+			// Note you're probably not dumb so you know that only you will see it.
+			var version = "6.2.1";
+			
+			// Ah well this is the price of mystery gifts
+			// Didn't it used to be 400 at one point?
+			// Oh well I don't know this is so if it does change I wont need to hunt it down
+			var priceOfMysteryGift=490;
+			// Ah these four fucking variables
+			// I didn't know how to get all the items from a JSON object to an array
+			// So I went to stackoverflow
+			// I found out how, only problem Riot burried this shit in arrays in arrays.
+			// So I said fuck it and just used the same solution twice
+			// Who would have guessed that it worked
+			var curChampName=[];
+			var currentChampName=[];
+			var numberofChamps=0;
+			var firstArrayPass=[];
+			var secondArrayPass=[];
+			
+			// Huh I wonder what all of this stuff is
+			// Maybe if you read the fucking name you'd know
+			// But you probably got distracted by this not
+			var totalSkins=0;
+			var currentChampURL="";
+			var currentChampSkins=0;
+			var champCounter=0;
+			var currentChampIMGurl="";
+			var skinCounter=0;
+			var champName="";
+			var totalSkinCost=0;
+			var totalChampCounter=0;
+			
+			
+			// Now I only have a rough Idea of what is going on here
+			// This project was the first I've done with Jquery
+			// And the first project I've done using an API
+			// I've tried to stay away from it because it always looked so messy to me
+			// Also because of http://needsmorejquery.com/
+			// What I intended for this to do is download a list of champions from Riot and put them into an array
+			// I think it does that but don't quote me
+			(function() {
+				var allAPI = "http://ddragon.leagueoflegends.com/cdn/"+version+"/data/en_US/champion.json";
+ 				$.getJSON( allAPI, {})
+ 				
+				.done(function(apiOutput) {
+					// Now this shit, I stole this shit
+					// I needed it to do something twice, so I just pasted it twice
+					// It worked, Luckily this is in Pure Javascript
+					// So I think I understand it a little more than Jquery
+					firstArrayPass = Object.keys(apiOutput).map(function(k) { return apiOutput[k] });
+					secondArrayPass = Object.keys(firstArrayPass[3]).map(function(k) { return firstArrayPass[3][k] });
+					// This makes note of how many current Champions there are
+					// This could be used for things like how much RP/IP to buy your remaining champions
+					numberOfChamps = Object.keys(apiOutput.data).length;
+					startshit();
+				});
+			})();
+			
+			
+			// Now this here is the bread and butter of the whole thing
+			// It takes the champions names, Fixes shit that Riot has done to it
+			// Downloades their page and then steals the important information
+			function startshit() {
+				// Forever how many champions there are go through this that many times
+				for(champCounter=0;champCounter < numberOfChamps; champCounter++){
+					// Get the name from the array*
+					var curChampName = secondArrayPass[champCounter].name;
+					// Fix the name that was gotten from the array
+					var currentChampName = curChampName.replace(/[^A-Z0-9]/ig, "");
+					// Doubbly fix the things that were gotten from the array and the fixed
+					switch(currentChampName) {
+						// Like what the hell is this Riot why can't it just be ChoGath
+						case "ChoGath":
+							currentChampName="Chogath";
+							console.log("Found " + currentChampName);
+							break;
+						case "KhaZix":
+							currentChampName="Khazix";
+							console.log("Found " + currentChampName);
+							break;
+						case "LeBlanc":
+							currentChampName="Leblanc";
+							console.log("Found " + currentChampName);
+							break;
+						case "VelKoz":
+							currentChampName="Velkoz";
+							console.log("Found " + currentChampName);
+							break;
+						// This one annoys me, why the fuck is Wukong Monkey king
+						// Why was this needed?
+						// Why not just change it to fucking Wukong?
+						case "Wukong": 
+							currentChampName="MonkeyKing";
+							console.log("Found " + currentChampName);
+							break;
+						// Also FUCKING FIDDLE STICKS
+						// Why why would anyone in their right mind go from "Fiddlesticks" > "FiddleSticks"
+						// And have their name be "Fiddlesticks"
+						// I hate this game so much
+						case "Fiddlesticks": 
+							currentChampName="FiddleSticks";
+							console.log("Found " + currentChampName);
+							break;
+						// Incase its a normal name just log it to the console
+						default:
+							console.log("Found " + currentChampName);
+					}
+					// Do a function that hasn't been made yet
+					getNumberOfSkins(currentChampName);
+				}
+			}
+			
+			// Does what you think it does, gets the number of skins for champion CCNF
+			// CCNF -> currentChampionNameFunction
+			// getNumberOfSkins is just a cover, this does much much more
+			function getNumberOfSkins(CCNF) {
+					// Sets the current URL of the champion with the correct version and stuff
+					currentChampURL = "http://ddragon.leagueoflegends.com/cdn/"+version+"/data/en_US/champion/" + CCNF + ".json";
+					
+					// Ah this starts the downlaoding of more stuff
+					// More specifily the JSON for a current champion
+					// Because this is where the skin data is stored for some reason
+					$.getJSON( currentChampURL, {})	
+				
+					// After it has downloaded the champion data do this stuff
+					// This stuff is logging how many skins they have
+					.done(function(currentChampAPI) {
+						// CNCOS -> champNumberCurrentOfSkins or something
+						CNCOS=eval('currentChampAPI.data.' + CCNF + '.skins.length;');
+						// Log the name of the champion and how many there are
+						console.log(CCNF + " " + CNCOS);
+						document.getElementById("images").innerHTML=document.getElementById("images").innerHTML + '<div class="images" id="'+CCNF+'images"></div>'
+						// For each skin do something
+						for(skinCounter = 0; skinCounter < CNCOS; skinCounter++){
+							// Log the name of the skin
+							console.log(eval('currentChampAPI.data.' + CCNF + '.skins['+skinCounter+'].name'));
+							// Creates the imageURL of a champ
+							currentChampIMGurl = "http://ddragon.leagueoflegends.com/cdn/img/champion/loading/"+CCNF+"_"+skinCounter+".jpg";
+							// Add the image to the CSS
+							document.getElementById(CCNF+"images").innerHTML = document.getElementById(CCNF+"images").innerHTML + '<img src="'+currentChampIMGurl+'" class="champImage">'
+						}
+						document.getElementById("textCont").innerHTML=document.getElementById("textCont").innerHTML + '<div class="champText" id="'+CCNF+'" onclick="displayChampImage('+"'"+CCNF+"'"+')" ondblclick="unDisplayChampImage('+"'"+CCNF+"'"+')">'+CCNF+'</div>'
+						// Get the total number of skins
+						eval('totalSkins = totalSkins + currentChampAPI.data.' + CCNF + '.skins.length;');
+						// Log the total number of skins
+						console.log(totalSkins);
+						// Make TotalSkinCost the amount of skins - amount of champions
+						// Because every skin has a default champion skin
+						// Fuck I'm not changin that, if you are reading this
+						// You know how dumb I am
+						totalSkinCost=totalSkins-numberOfChamps
+						// Because RIOT made really exclusive skins that you
+						// had to go to special events for, you can't get
+						// myterygifted like 20 skins, this number will
+						// defiently change because riot needs their $$$
+						// so thats what this is for
+						// https://support.riotgames.com/hc/en-us/articles/201752944-Guide-to-Legacy-and-Limited-Skins
+						
+						/*
+						Rusty Blitzcrank
+						Urf the Manatee
+						
+						Victorious Jarvan IV (Season 1)
+						Victorious Janna (Season 2)
+						Victorious Elise (Season 3)
+						Victorious Morgana (2014 Season)
+						
+						Grey Warwick (refer 3 friends who reach level 10 or higher)
+						Medieval Twitch (refer 5 friends who reach level 10 or higher)
+								The Refer-a-Friend program has been retired, so these skins are currently unavailable. We may release them as rewards for social initiatives in the future, so keep an eye out!
+						
+						Triumphant Ryze (win an official League of Legends tournament)
+						King Rammus (awarded to players who participated in Closed Beta)
+						Judgment Kayle (awarded to players who played at least 10 matchmade games in Season 1)
+						UFO Corki (awarded to players for voting in the Reader's Choice Awards 2009)
+						Riot Girl Tristana (become a fan on the official League of Legends Facebook page)
+						Unchained Alistar (subscribe to the official League of Legends YouTube channel)
+						
+						Riot Squad Singed (2010 and 2011 events)
+						
+						PAX Twisted Fate (PAX 2009)
+						PAX Jax (PAX East/Prime 2010 & PAX East 2011)
+						PAX Sivir (PAX Prime 2011)
+						
+						Silver Kayle (Retail Collector's Edition)
+						Black Alistar (Digital Collector's Edition - Preorder)
+						Human Ryze (Retail Collector's Edition - Preorder)	
+						*/
+						totalSkinCost=totalSkinCost-21;
+						document.getElementById("rpCost").innerHTML="Total Cost of all skins = "+totalSkinCost*priceOfMysteryGift+" RP";
+					}
+				)
+			}
+			
+			// What the hell? for some reason champName is auto directed to the div
+			// I guess in the end it's easier but it took me a while to figure this out
+			function displayChampImage(champName) {
+				// Display the imag(s)
+				document.getElementById(champName+"images").style.display="block";
+				// Make the text the cursur is on that bluish color
+				document.getElementById(champName).style.color="#369";
+			}
+			function unDisplayChampImage(champName) {
+				// unDisplay the imag(s)
+				document.getElementById(champName+"images").style.display="none";
+				// unMake the text the cursur is on that bluish color
+				document.getElementById(champName).style.color="#FFF";
+			}
+		</script>
+	</head>
+	<body id="body">
+		<div id="textCont"></div>
+		<div id="images"></div>
+		<div id="rpCost"></div>
+	</body>
+	<style>
+	.champImage {
+		width: 100px;
+		height : 200px;
+	}
+	.images {
+		float:right;
+		display:none;
+		clear: both;
+	}
+	#textCont{
+		display:table;
+		height:50%;
+	}
+	.champText {
+		width:90px;
+		float:left;
+		display: inline;
+		color:#FFF;
+		background:#333;
+		-webkit-user-select: none;
+		-khtml-user-select: none;
+		-moz-user-select: none;
+		-o-user-select: none;
+		user-select: none;
+	}
+	html {
+		background:#333;
+	}
+	#rpCost {
+		position:absolute;
+		top:100%;
+		transform: translate(0%, -20px);
+		color:#B55;
+	}
+	</style>
+</html>

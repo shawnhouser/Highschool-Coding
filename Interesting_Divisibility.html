@@ -1,0 +1,53 @@
+<html>
+	<head>
+		<style>
+		</style>
+	</head>
+	<body>
+
+	</body>
+	<script>
+		function findMagicNumber(primeNumber){
+			var frontEnd = Math.trunc(primeNumber/10);
+			var backNumber = primeNumber - 10*frontEnd;
+			var almostMagicNumber;
+			switch(backNumber){
+				case 1:
+					almostMagicNumber = 9*frontEnd+1;
+				break; case 3:
+					almostMagicNumber = 3*frontEnd+1;
+				break; case 7:
+					almostMagicNumber = 7*frontEnd+5;
+				break; case 9:
+					almostMagicNumber = 1*frontEnd+1;
+				break;default:
+					almostMagicNumber = primeNumber+1;
+			}
+			var magicNumber = primeNumber - almostMagicNumber;
+			return magicNumber;
+		}
+		function isDivisibleBy(inputNumber, divisor){
+			var magicNumber = findMagicNumber(divisor);
+			function doDivisibleBy(number){
+				var frontEnd = Math.trunc(number/10);
+				var backNumber = number - 10*frontEnd;
+				newNumber = frontEnd - (backNumber*magicNumber);
+				if(isInteger(number) && newNumber > divisor){
+					return doDivisibleBy(newNumber);
+				} else if(newNumber <= divisor){
+					return true;
+				} else {
+					return false;
+				}
+			}
+			if(magicNumber == -1){
+				console.log("Invalid Divisor");
+			} else {
+				return doDivisibleBy(inputNumber, divisor);
+			}
+		}
+		function isInteger(number){
+			if(number%1 == 0){ return true; } else { return false; }
+		}
+	</script>
+</html>

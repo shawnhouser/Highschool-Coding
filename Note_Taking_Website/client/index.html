@@ -1,0 +1,61 @@
+
+<html>
+	<head>
+	</head>
+	<body>
+		<form action="javascript:saveData(nameToUse);"><input type="text" id="inputField"></input></form>
+		<button onclick="requestData(nameToUse);">Request</button>
+		<div id="domenow">
+		</div>
+	</body>
+<script src="https://cdn.socket.io/socket.io-1.4.5.js"></script>
+<script>
+function getQueryVariable(variable)
+{
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+		if(pair[0] == variable){return pair[1];}
+	}
+	return("chooseAUserName");
+}
+	var nameToUse = getQueryVariable('username');
+	var socket = io.connect("http://localhost:2000");
+	function saveData(userName){
+		var dataToSave = document.getElementById("inputField").value;
+		socket.emit('storeData',{
+			userName: userName,
+			jsonEntry: dataToSave
+		});
+		requestData(userName)
+	}
+	function requestData(userName) {
+		socket.emit("requestData", {
+			userName: userName
+		});
+	}
+	function deleteEntry(userName, entryToDelete){
+		console.log(1);
+		socket.emit("deleteEntry", {
+			userName: userName,
+			entryToDelete: entryToDelete
+		});
+		requestData(userName);
+	}
+
+	socket.on("transmitData", function(data){
+		updateScreen(JSON.parse(data));
+	});
+	function updateScreen(data){
+		writingDiv = document.getElementById("domenow");
+		writingDiv.innerHTML = "";
+		for(var i = 0; i < data.entries.length; i++){
+			writingDiv.innerHTML += "<div>"+data.entries[i]+"<button onclick=\"deleteEntry(nameToUse,"+i+")\";></div>";
+		}
+	}
+	//var a ="woo";
+	
+	//saveData("help", a);
+    
+</script>

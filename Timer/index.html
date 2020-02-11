@@ -1,0 +1,75 @@
+<html>
+	<script type="text/javascript" src="howler.js"></script>
+	<head>
+        <style>
+			body{
+				background-color:black;
+				display:flex;
+				justify-content: center;
+				align-items: center;
+			}
+			#time{
+				font-size:4em;
+				height:1em;
+				text-align:center;
+				border-width: 0px;
+				border-radius: 90px;
+				margin:none;
+				padding:none;
+			}		
+			.timer {
+				animation-duration:60s;
+				animation-iteration-count: infinite;
+				background-image: linear-gradient(#333,#333 1px);
+
+				background-repeat:no-repeat;
+  				animation-name:progressBar;
+				animation-timing-function: linear;
+				animation-delay:0s;
+				animation-direction: normal;
+				animation-fill-mode: none;
+				animation-play-state: running;
+			}
+
+			@keyframes progressBar {
+  				0% {background-size: 0% 100%;}
+  				100% {background-size: 100% 100%;}
+			}
+		</style>
+	</head>
+	<body>
+		<input  id="time" class="timer">60</input>
+	</body>
+	<script>
+		var sound = new Howl({
+			src: ["beep.mp3", "beep.ogg"],
+			volume:1
+		});
+		/* Initialize */
+		var id = setInterval(function(){sound.play();}, 60000);
+		var timeInput = document.getElementById("time");
+		timeInput.style.animationDuration = "60s";
+		timeInput.addEventListener("keyup", function(){newTimer(timeInput.value)})
+
+		function newTimer(time){
+			clearInterval(id)
+			if(!time || time == 0 || isNaN(time)){
+				time = 10;
+			}
+			id = setInterval(function(){sound.play();}, time*1000);
+			timeInput.style.animationDuration = time+"s";
+			resetAnimation("time");
+		}
+
+		function resetAnimation(tagID) {
+			var elm = document.getElementById(tagID);
+			var newone = elm.cloneNode(true);
+			newone.addEventListener("keyup", function(){newTimer(timeInput.value)})
+			elm.parentNode.replaceChild(newone, elm);
+			timeInput = document.getElementById("time");
+			timeInput.focus();
+			timeInput.selectionStart = timeInput.selectionEnd = timeInput.value.length;
+		}
+		
+	</script>
+</html>

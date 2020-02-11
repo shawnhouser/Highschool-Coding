@@ -1,0 +1,186 @@
+<html>
+	<head>
+		<script src="jscolor.min.js"></script>
+		<script src="makeTwoDimensional.js"></script>
+		<script src="drawTwoDimensional.js"></script>
+		<script src="miscUtilities.js"></script>
+		<script src="inputDataToTree.js"></script>
+		<script src="compareEditOutputTree.js"></script>
+		<style>
+			.table-like {
+				display: table;
+				table-layout:fixed;
+			
+			}
+			.table-like div { display: table-row; }
+			.table-like div span { 
+  				display: table-cell;
+				width:50px;
+				height:1.3em;
+				font-size:.7em;
+				font-family: Andale Mono, monospace;
+			}	
+			.table-like div .name {
+				width:270px;
+				height:1.3em;
+				font-size:.7em;
+				position:absolute;
+				border: 1px solid black;
+			}
+			/* center all spans */
+			.table-like div span { text-align:center; }
+			/* add borders to all cells and canvas*/
+			.table-like div span { border: 1px solid black; }
+			.table-like div canvas{ position:absolute; }
+			.table-like div span input { width:100%;height:100%;border:none; }
+
+			canvas {
+				image-rendering: optimizeSpeed;             /* Older versions of FF   		 */       
+				image-rendering: -moz-crisp-edges;          /* FF 6.0+                	  	 */   
+				image-rendering: -webkit-optimize-contrast; /* Safari                        */
+				image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+				image-rendering: pixelated;                 /* Awesome future-browsers       */
+				-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+			}
+			form { background-color:white; }
+			.divPadding{padding:30px;}
+			.greyBackground { background-color: grey;}
+			.whiteBackground { background-color: white;}
+			
+			#drawButton, #hideHolder, #shareHolder{
+				position:absolute;
+				height:50px;
+				width:90;
+				bottom:-40px;
+			}
+			#drawButton{
+				background-color:lime;
+				font-size:30px;
+				right:10px;
+			}
+			#hideHolder {
+				background-color:mediumturquoise;
+				font-size:14px;
+				right:110px;
+			}
+			#shareHolder {
+				text-align: center;
+				background-color:deepskyblue;
+				right:210px;
+			}
+			#share{
+				position:absolute;
+				height:1.3em;
+				width:80px;
+				left:5px;
+				top:50%;
+			}
+			#readerInfoHolder{
+				font-size:.8em;
+				position:absolute;
+				top:0px;
+				right:0px;
+			}
+		</style>
+	</head>
+	<body id="body" onload="onLoad();" style="position:relative;">
+		<div id="readerInfoHolder"><div id="readerInfo"></div></div>
+		<button onclick="doEverythingButBetter()" id="drawButton">Draw</button>
+		<div id="hideHolder">
+			<input id="graphHide" type="checkbox" onchange="checkBoxSwitch(this)"></input> Hide Graph</br>
+			<input id="formHide" type="checkbox" onchange="checkBoxSwitch(this)"></input> Hide Forms
+		</div>
+		<div id="shareHolder">
+			Share
+			<input id="share"></input>
+		</div>
+		<div id="container" style="margin-bottom:50px;"></div>
+	</body>
+	<script>
+	var formData = {
+		"tree":[]
+	}
+	function onLoad(){
+		var firsHTMLNode = document.getElementById('container');
+		var URLParameters = getURLParameters();
+		if(URLParameters.formData){
+			formData = JSON.parse(URLParameters.formData);
+			createFirstForm(formData.topInfo, document.body)
+			window.history.pushState({}, '', removeURLParameters());
+		} else {
+			createFirstForm({}, document.body)
+			formData.tree = {"0":1};
+		}
+		drawFormsWithTree(formData.tree, firsHTMLNode, 0);
+	}
+	function checkBoxSwitch(checkBox){
+		var thingToHide = null;
+		
+		if(checkBox.id == "graphHide"){thingToHide = document.getElementsByTagName('canvas')[0]} else {thingToHide = document.getElementById('container')}
+		if(checkBox.checked){
+			thingToHide.style.display = "none";
+		} else {
+			thingToHide.style.display = "block";
+		}
+	}
+
+	var canvasListener = null;
+	
+	function doEverythingButBetter(){
+		var firsHTMLNode = document.getElementById('container');
+		var firstCanvas = document.getElementsByTagName('canvas')[0];
+		var shareBox = document.getElementById('share');
+		if(findIfAnyNull(formData.tree)){ console.log(1);return; }
+		mapFormsToTree(formData.tree);
+		addTBComparisons(formData.tree[0], firsHTMLNode.childNodes[0]);
+		formData.topInfo = getFirstForm();
+		var final2d = findOutcomeOf(formData.tree[0], formData.topInfo)
+		draw2d(
+			final2d, firstCanvas,
+			formData.topInfo.xScale, formData.topInfo.yScale, formData.topInfo.lowDark,
+			formData.topInfo.lineDirection, formData.topInfo.color
+		);
+		shareBox.value = removeURLParameters() + "?formData="+ JSON.stringify(formData);
+
+
+
+		firstCanvas.removeEventListener('mousedown', canvasListener);
+		canvasListener = function(evt){
+			var mousePos = getMousePos(firstCanvas, evt);
+			var spotsToFind = {
+				"x": Math.ceil(mousePos.x/formData.topInfo.xScale)-1,
+				"y": Math.ceil(mousePos.y/formData.topInfo.yScale)-1
+			}
+			findValueFromSides(formData.tree, spotsToFind, formData.topInfo, document.getElementById('readerInfo'))
+		}
+		firstCanvas.addEventListener('mousedown', canvasListener);
+		
+	}
+	function findValueFromSides(inputTree, targetXYJSON, rootValues, outputSpot){
+		outputSpot.innerHTML = "";
+		/*---------------------------------------------------------*/
+		function doFindValueFromSides(treeBranch){
+			var currentBranchType = whatIsIt(treeBranch)
+			if(currentBranchType == "Branch"){
+				var numberOfBranches = getJSONLength(treeBranch);
+				if(numberOfBranches > 1){
+					doFindValueFromSides(treeBranch[0])
+					doFindValueFromSides(treeBranch[1])
+				} else {
+					doFindValueFromSides(treeBranch[0])
+				}
+			} else {
+				var textToAdd = "";
+				textToAdd += treeBranch.xName + " : ";
+				textToAdd += make1dArray(treeBranch.xStart, treeBranch.xEnd, rootValues.xPrecision)[targetXYJSON.x]+"</br>";
+				textToAdd += treeBranch.yName + " : ";
+				textToAdd += make1dArray(treeBranch.yStart, treeBranch.yEnd, rootValues.yPrecision)[targetXYJSON.y]+"<br>";
+				outputSpot.innerHTML += textToAdd
+			}
+		}
+		/*---------------------------------------------------------*/
+		doFindValueFromSides(inputTree);
+	}
+
+	</script>
+</html>

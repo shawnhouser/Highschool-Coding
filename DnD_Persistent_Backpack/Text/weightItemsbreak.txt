@@ -1,0 +1,396 @@
+				case "leather helmet":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze helmet":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass helmet":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold helmet":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron helmet":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel helmet":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril helmet":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium helmet":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant helmet":
+					weight = weight + 4;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant cape":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather necklace":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze necklace":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass necklace":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold necklace":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron necklace":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel necklace":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril necklace":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium necklace":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant necklace":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather gauntlets":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze gauntlets":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass gauntlets":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold gauntlets":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron gauntlets":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel gauntlets":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril gauntlets":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium gauntlets":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant gauntlets":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather platebody":
+					weight = weight + 5;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze platebody":
+					weight = weight + 9;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass platebody":
+					weight = weight + 12;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold platebody":
+					weight = weight + 8;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron platebody":
+					weight = weight + 10;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel platebody":
+					weight = weight + 10;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril platebody":
+					weight = weight + 6;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium platebody":
+					weight = weight + 14;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant platebody":
+					weight = weight + 18;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather armguards":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze armguards":
+					weight = weight + 6;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass armguards":
+					weight = weight + 8;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold armguards":
+					weight = weight + 5;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron armguards":
+					weight = weight + 7;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel armguards":
+					weight = weight + 7;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril armguards":
+					weight = weight + 4;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium armguards":
+					weight = weight + 10;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant armguards":
+					weight = weight + 13;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather ring":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze ring":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass ring":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold ring":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron ring":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel ring":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril ring":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium ring":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant ring":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather bracelet":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze bracelet":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass bracelet":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold bracelet":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron bracelet":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel bracelet":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril bracelet":
+					weight = weight + 0;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium bracelet":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant bracelet":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather platelegs":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze platelegs":
+					weight = weight + 6;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass platelegs":
+					weight = weight + 8;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold platelegs":
+					weight = weight + 5;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron platelegs":
+					weight = weight + 7;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel platelegs":
+					weight = weight + 7;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril platelegs":
+					weight = weight + 4;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium platelegs":
+					weight = weight + 10;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant platelegs":
+					weight = weight + 13;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather boots":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze boots":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass boots":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold boots":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron boots":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel boots":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril boots":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium boots":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant boots":
+					weight = weight + 4;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "leather shield":
+					weight = weight + 1;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "bronze shield":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "brass shield":
+					weight = weight + 4;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "gold shield":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "iron shield":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "steel shield":
+					weight = weight + 3;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "mithril shield":
+					weight = weight + 2;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "titanium shield":
+					weight = weight + 4;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;
+				case "adamant shield":
+					weight = weight + 6;
+					document.getElementById('item'+weightCounter).classList.add('armor');
+					break;

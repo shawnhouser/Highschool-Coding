@@ -1,0 +1,82 @@
+<html>
+	<head>
+		<style>
+			canvas {
+				border:2px solid black;
+				width:500px;
+				height:500px;
+				image-rendering: optimizeSpeed;             /* Older versions of FF          */
+				image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */   
+				image-rendering: -webkit-optimize-contrast; /* Safari                        */
+				image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+				image-rendering: pixelated;                 /* Awesome future-browsers       */
+				-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+			}
+		</style>
+	</head>
+	<body>
+		<div id="question"></div>
+		<form id="answer">
+			<input></input>
+		</form>
+
+
+		<canvas id="canvas" style="display:none;"></canvas>
+	</body>
+	<script src="drawToCanvas.js"></script>
+	<script src="utilities.js"></script>
+	<script src="travelingSalseman.js"></script>
+	<script src="minimumSpanningTree.js"></script>
+	<script src="questionsAndAnswer.js"></script>
+	<script>
+		var maxX = 500;
+		var maxY = 500;
+		input.startInput();
+
+		function doCalculations(cityMatrix, cityObjects){
+			var amountOfCities = 10;
+
+			var canvas = document.getElementById('canvas');
+			var context = canvas.getContext('2d');
+			canvas.style.display = "block"; canvas.style.width = maxX; canvas.style.height = maxY;
+			context.canvas.width = maxX; context.canvas.height = maxY;
+			/*
+			[
+				[0,		294,	0,		335,	272,	206,	0,		0],
+				[294,	0,		430,	224,	0,		0,		0,		421],
+				[0,		430,	0,		403,	0,		0,		0,		248],
+				[335,	224,	403,	0,		0,		187,	229,	259],
+				[272,	0,		0,		0,		0,		111,	253,	0],
+				[206,	0,		0,		187,	111,	0,		211,	427],
+				[0,		0,		0,		229,	253,	211,	0,		374],
+				[0,		421,	248,	259,	0,		427,	374,	0],
+			]
+
+			[
+				{x:30,y:80,name:"Detroit"},
+				{x:130,y:30,name:"Buffalo"},
+				{x:250,y:100,name:"New York"},
+				{x:130,y:150,name:"Pittsburgh"},
+				{x:30,y:250,name:"Cincinati"},
+				{x:50,y:200,name:"Columbus"},
+				{x:130,y:280,name:"Charelston"},
+				{x:200,y:200,name:"Washington"},
+			]
+			*/
+		
+			cityObjects = cityObjects || makeRandomCities(amountOfCities, maxX, maxY);
+			cityMatrix = cityMatrix || citiesToMatrix(cityObjects);
+
+			var tspInfo = travelingSalsemanProblem(cityMatrix);
+			var bestPath = tspInfo.tsPath;
+			var lowestCost = tspInfo.tsCost;
+			var nearNe = tspInfo.nnPath;
+			var mstInfo = minimumSpanningTree(cityMatrix);
+			displayCities(cityObjects, context, {isDot:false,useNumberName:false});
+			drawPath(cityObjects, cityMatrix, bestPath, context, {drawLength:true, lineColor:"darkblue", textColor:"black"})
+			drawPath(cityObjects, cityMatrix, mstInfo, context, {lineColor:"lightgreen"})
+			drawPath(cityObjects, cityMatrix, nearNe, context, {lineColor:"red"})
+			
+		}
+	</script>
+</html>

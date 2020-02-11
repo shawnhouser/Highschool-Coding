@@ -1,0 +1,62 @@
+<html>
+	<head>
+		<style>
+			canvas {
+				image-rendering: optimizeSpeed;             /* Older versions of FF   		 */       
+				image-rendering: -moz-crisp-edges;          /* FF 6.0+                	  	 */   
+				image-rendering: -webkit-optimize-contrast; /* Safari                        */
+				image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+				image-rendering: pixelated;                 /* Awesome future-browsers       */
+				-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+			}
+			*{
+				margin:0px;
+			}
+		</style>
+	</head>
+	<body>
+		<canvas></canvas>
+	</body>
+	<script>
+		function drawArrayOnCanvas(dataArray, width, height, scale){
+			var canvas = document.getElementsByTagName("canvas")[0];
+			var ctx = canvas.getContext("2d");
+			var imageData = ctx.getImageData(0, 0, width, height);
+			ctx.canvas.width = width;
+			ctx.canvas.height = height;
+			canvas.style.width = width * scale;
+			canvas.style.height = height * scale;
+			var length = dataArray.length;
+			for(var i = 0; i < length; i++){
+				var index = i*4;
+				var alpha = index + 3;
+				if(dataArray[i]){
+					imageData.data[alpha] = 255;
+				} else {
+					imageData.data[alpha] = 0;
+				}
+			}
+			ctx.putImageData(imageData, 0, 0);
+		}
+		function createArrayOfPrimes(amount){
+			var returnArray = [];    for(var q = 0; q < amount; q++){    returnArray[q] = true;    }
+			returnArray[0] = false;
+			var countTo = Math.sqrt(amount);
+			for(var j = 2; j < countTo; j++){
+				if(!returnArray[j-1]){    continue;    }
+				for(var i = 1; i < amount+1; i++){	
+					if(i % j == 0 && i != j){
+						returnArray[i-1] = false;
+					}
+				}
+			}
+			return returnArray;
+		}
+		function makePrimeChart(){
+			var amount = Math.pow(10, 4);
+			var primeArray = createArrayOfPrimes(amount);
+			drawArrayOnCanvas(primeArray, 99, 100, 10);
+		}
+		makePrimeChart();
+	</script>
+</html>

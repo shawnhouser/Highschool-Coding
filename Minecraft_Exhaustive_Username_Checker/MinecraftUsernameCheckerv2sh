@@ -1,0 +1,38 @@
+#!/bin/bash
+#Download and check minecraft usernames
+#minecraftURLChecker=https://minecraft.net/haspaid.jsp?user=
+
+#Stole This
+function decimal_to_base36(){
+	BASE36=($(echo {0..9} {A..Z} {_.._}));
+	arg1=$@;
+	for i in $(bc <<< "obase=36; $arg1"); do
+		echo -n ${BASE36[$(( 10#$i ))]}
+	done && echo
+}
+
+#The Function
+function getCurrentUsername {
+	#Start Number
+	a=1296
+	#While Less than End Number
+	while [ $a -lt 46656 ]; do
+		#Don't mess up
+		((a=a+1))
+
+		#make Current number to Current Name addon
+		currentNameAddon=$(decimal_to_base36 $a)
+		# UNNEEDED Make the whole URL
+		currentUsername=https://minecraft.net/haspaid.jsp?user=$currentNameAddon
+		#If the site is not = true then
+		if [ ! $(curl -s https://minecraft.net/haspaid.jsp?user=$currentNameAddon) = true ]
+			then	
+				#Record it
+				echo $currentNameAddon >> openNames.txt
+				#Make sure its not dead
+				echo $currentNameAddon
+		fi
+	done
+}
+
+getCurrentUsername

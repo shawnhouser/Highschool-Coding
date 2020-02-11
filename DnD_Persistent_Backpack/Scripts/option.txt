@@ -1,0 +1,146 @@
+	<datalist id="itemDataList">
+		<option>Leather Helmet</option>
+		<option>Leather Chain Helmet</option>
+		<option>Leather Cape</option>
+		<option>Leather Necklace</option>
+		<option>Leather Gauntlets</option>
+		<option>Leather Chain Gauntlets</option>
+		<option>Leather Platebody</option>
+		<option>Leather Chain Chestpiece</option>
+		<option>Leather Armguards</option>
+		<option>Leather Chain Armguards</option>
+		<option>Leather Ring</option>
+		<option>Leather Bracelet</option>
+		<option>Leather Platelegs</option>
+		<option>Leather Chain Pants</option>
+		<option>Leather Boots</option>
+		<option>Leather Shield</option>
+		<option>Bronze Helmet</option>
+		<option>Bronze Chain Helmet</option>
+		<option>Bronze Cape</option>
+		<option>Bronze Necklace</option>
+		<option>Bronze Gauntlets</option>
+		<option>Bronze Chain Gauntlets</option>
+		<option>Bronze Platebody</option>
+		<option>Bronze Chain Chestpiece</option>
+		<option>Bronze Armguards</option>
+		<option>Bronze Chain Armguards</option>
+		<option>Bronze Ring</option>
+		<option>Bronze Bracelet</option>
+		<option>Bronze Platelegs</option>
+		<option>Bronze Chain Pants</option>
+		<option>Bronze Boots</option>
+		<option>Bronze Shield</option>
+		<option>Brass Helmet</option>
+		<option>Brass Chain Helmet</option>
+		<option>Brass Cape</option>
+		<option>Brass Necklace</option>
+		<option>Brass Gauntlets</option>
+		<option>Brass Chain Gauntlets</option>
+		<option>Brass Platebody</option>
+		<option>Brass Chain Chestpiece</option>
+		<option>Brass Armguards</option>
+		<option>Brass Chain Armguards</option>
+		<option>Brass Ring</option>
+		<option>Brass Bracelet</option>
+		<option>Brass Platelegs</option>
+		<option>Brass Chain Pants</option>
+		<option>Brass Boots</option>
+		<option>Brass Shield</option>
+		<option>Gold Helmet</option>
+		<option>Gold Chain Helmet</option>
+		<option>Gold Cape</option>
+		<option>Gold Necklace</option>
+		<option>Gold Gauntlets</option>
+		<option>Gold Chain Gauntlets</option>
+		<option>Gold Platebody</option>
+		<option>Gold Chain Chestpiece</option>
+		<option>Gold Armguards</option>
+		<option>Gold Chain Armguards</option>
+		<option>Gold Ring</option>
+		<option>Gold Bracelet</option>
+		<option>Gold Platelegs</option>
+		<option>Gold Chain Pants</option>
+		<option>Gold Boots</option>
+		<option>Gold Shield</option>
+		<option>Iron Helmet</option>
+		<option>Iron Chain Helmet</option>
+		<option>Iron Cape</option>
+		<option>Iron Necklace</option>
+		<option>Iron Gauntlets</option>
+		<option>Iron Chain Gauntlets</option>
+		<option>Iron Platebody</option>
+		<option>Iron Chain Chestpiece</option>
+		<option>Iron Armguards</option>
+		<option>Iron Chain Armguards</option>
+		<option>Iron Ring</option>
+		<option>Iron Bracelet</option>
+		<option>Iron Platelegs</option>
+		<option>Iron Chain Pants</option>
+		<option>Iron Boots</option>
+		<option>Iron Shield</option>
+		<option>Steel Helmet</option>
+		<option>Steel Chain Helmet</option>
+		<option>Steel Cape</option>
+		<option>Steel Necklace</option>
+		<option>Steel Gauntlets</option>
+		<option>Steel Chain Gauntlets</option>
+		<option>Steel Platebody</option>
+		<option>Steel Chain Chestpiece</option>
+		<option>Steel Armguards</option>
+		<option>Steel Chain Armguards</option>
+		<option>Steel Ring</option>
+		<option>Steel Bracelet</option>
+		<option>Steel Platelegs</option>
+		<option>Steel Chain Pants</option>
+		<option>Steel Boots</option>
+		<option>Steel Shield</option>
+		<option>Mithril Helmet</option>
+		<option>Mithril Chain Helmet</option>
+		<option>Mithril Cape</option>
+		<option>Mithril Necklace</option>
+		<option>Mithril Gauntlets</option>
+		<option>Mithril Chain Gauntlets</option>
+		<option>Mithril Platebody</option>
+		<option>Mithril Chain Chestpiece</option>
+		<option>Mithril Armguards</option>
+		<option>Mithril Chain Armguards</option>
+		<option>Mithril Ring</option>
+		<option>Mithril Bracelet</option>
+		<option>Mithril Platelegs</option>
+		<option>Mithril Chain Pants</option>
+		<option>Mithril Boots</option>
+		<option>Mithril Shield</option>
+		<option>Titanium Helmet</option>
+		<option>Titanium Chain Helmet</option>
+		<option>Titanium Cape</option>
+		<option>Titanium Necklace</option>
+		<option>Titanium Gauntlets</option>
+		<option>Titanium Chain Gauntlets</option>
+		<option>Titanium Platebody</option>
+		<option>Titanium Chain Chestpiece</option>
+		<option>Titanium Armguards</option>
+		<option>Titanium Chain Armguards</option>
+		<option>Titanium Ring</option>
+		<option>Titanium Bracelet</option>
+		<option>Titanium Platelegs</option>
+		<option>Titanium Chain Pants</option>
+		<option>Titanium Boots</option>
+		<option>Titanium Shield</option>
+		<option>Adamant Helmet</option>
+		<option>Adamant Chain Helmet</option>
+		<option>Adamant Cape</option>
+		<option>Adamant Necklace</option>
+		<option>Adamant Gauntlets</option>
+		<option>Adamant Chain Gauntlets</option>
+		<option>Adamant Platebody</option>
+		<option>Adamant Chain Chestpiece</option>
+		<option>Adamant Armguards</option>
+		<option>Adamant Chain Armguards</option>
+		<option>Adamant Ring</option>
+		<option>Adamant Bracelet</option>
+		<option>Adamant Platelegs</option>
+		<option>Adamant Chain Pants</option>
+		<option>Adamant Boots</option>
+		<option>Adamant Shield</option>
+	</datalist>

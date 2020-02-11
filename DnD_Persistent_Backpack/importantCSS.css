@@ -1,0 +1,66 @@
+
+			#result {
+				color: #d33;
+			}
+			.gem {
+				color: #3d3;
+			}
+			
+			#clearButton{
+				position:relative;
+				float:right;
+				background:#B28;
+				color:#DDD;
+			}
+			
+			
+			
+			
+			
+			#inputForm, #AITL, #inputText, #clearButton{
+				line-height: normal !important;
+				padding: 0px;
+				font-size: 13px;
+				line-height: 15px;
+				font-family: monaco;
+				font-size: 100%;
+				border-color: #fff;
+				border-width: 1.5px;
+				
+			}
+			#AITL{
+				position: relative;
+				background: #B28;
+				color:#DDD;
+			}
+			#inputText{
+				color: #fff;
+				background: #300A24;
+			}
+			.item{
+				width:270px;
+			}
+			.removeButton {
+				background-color:#F14;
+				height:19px;
+				width:19px;
+				float:right;
+				display:none;
+			}
+			
+			
+			
+			
+			
+			
+			#AC, #weight {
+				color: #AAA;
+				font-family: monaco;
+			}
+			#log {
+				font-family: monaco;
+				color: #fff;
+			}
+			HTML {
+				background: #300A24;
+			}

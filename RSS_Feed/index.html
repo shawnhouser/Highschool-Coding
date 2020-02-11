@@ -1,0 +1,110 @@
+<html>
+    <head>
+        <title>Shawn's RSS Feed</title>
+        <style>
+            table {
+                border-collapse: collapse;
+                width:100%;
+            }
+            tr {
+                border: 1px solid black;
+            }
+        </style>
+    </head>
+    <body>
+    </body>
+    <script>
+        const socket = new WebSocket('ws://localhost:8080');
+        socket.onerror = function(){
+            console.log("ERROR");
+        }
+        socket.onmessage = function (response) {
+            outputFeeds(JSON.parse(response.data));
+            socket.close();
+        }
+
+        function outputFeeds(feeds){
+            function makeTimeLine(){
+                var allFeeds = [];
+                for(var i in feeds){
+                    var currentFeed = feeds[i];
+                    for(var q in currentFeed.entries){
+                        allFeeds.push(currentFeed.entries[q]);
+                    }
+                }
+                return allFeeds.sort((feedA, feedB) => feedB.time - feedA.time);
+            }
+            var sortedFeeds = makeTimeLine();
+            var tableNode = document.createElement('table');
+            for(var i = 0; i < sortedFeeds.length; i++){
+                var currentEntry = sortedFeeds[i];
+                var tableRow = document.createElement('tr');
+                    var rowData = document.createElement('div');
+                        rowData.style.display = 'flex';
+                        rowData.style.alignItems = 'center';
+                        rowData.style.justifyContent = 'flex-start'
+                        rowData.style.margin = '1.5px';
+                        rowData.style.width = '100%';
+                        var icon = document.createElement('img');
+                            icon.src = 'https://www.google.com/s2/favicons?domain='+currentEntry.parentLink;
+                            icon.title = currentEntry.parentTitle;
+                            icon.style.marginRight = '.5em';
+                        rowData.appendChild(icon);
+
+                        var link = document.createElement('a');
+                            link.href = currentEntry.link;
+                            link.target = '_blank';
+                            link.innerText = currentEntry.title;
+                        rowData.appendChild(link);
+
+                        var date = document.createElement('span');
+                            date.innerText = timeSince(currentEntry.time);
+                            date.style.marginRight = '3px';
+                            date.style.marginLeft = 'auto';
+                        rowData.appendChild(date);
+                    tableRow.appendChild(rowData);
+                tableNode.appendChild(tableRow);
+            }
+
+            document.body.appendChild(tableNode);
+        }
+        	
+    function timeSince(date) {
+       
+        var timeSinceDate = Math.floor((new Date() - date) / 1000);
+        var secondsInA = {
+            year: 31536000,
+            month: 2592000,
+            week: 604800,
+            day: 86400,
+            hour: 3600,
+            minute: 60,
+        }
+        var timePeriodsAgo = 0;
+        var timePeriodType = '';
+        if(timeSinceDate > secondsInA['year']) {
+            timePeriodsAgo = Math.floor(timeSinceDate / secondsInA['year'])
+            timePeriodType = timePeriodsAgo == 1 ? 'year' : 'years';
+        } else if(timeSinceDate > secondsInA['month']) {
+            timePeriodsAgo = Math.floor(timeSinceDate / secondsInA['month'])
+            timePeriodType = timePeriodsAgo == 1 ? 'month' : 'months';
+        } else if(timeSinceDate > secondsInA['week']) {
+            timePeriodsAgo = Math.floor(timeSinceDate / secondsInA['week'])
+            timePeriodType = timePeriodsAgo == 1 ? 'week' : 'weeks';
+        } else if(timeSinceDate > secondsInA['day']) {
+            timePeriodsAgo = Math.floor(timeSinceDate / secondsInA['day'])
+            timePeriodType = timePeriodsAgo == 1 ? 'day' : 'days';
+        } else if(timeSinceDate > secondsInA['hour']) {
+            timePeriodsAgo = Math.floor(timeSinceDate / secondsInA['hour'])
+            timePeriodType = timePeriodsAgo == 1 ? 'hour' : 'hours';
+        } else if(timeSinceDate > secondsInA['minute']) {
+            timePeriodsAgo = Math.floor(timeSinceDate / secondsInA['minute'])
+            timePeriodType = timePeriodsAgo == 1 ? 'minute' : 'minutes';
+        } else {
+            timePeriodsAgo = Math.floor(timeSinceDate)
+            timePeriodType = timePeriodsAgo == 1 ? 'minute' : 'minutes';
+        }
+        return timePeriodsAgo + ' ' + timePeriodType + ' ago';
+    }
+    </script>
+</head>

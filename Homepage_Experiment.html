@@ -1,0 +1,184 @@
+<html>
+	<head>
+		<style>
+			/* Utilities */
+			.fullScreen{
+				display:none;
+				position:absolute;
+				width:100vw;
+				height:100vh;
+				margin-left: calc(-50vw + 50%);
+			}
+			.centerInsides {
+				display: flex;
+				justify-content:center;
+				align-items:center;
+			}
+			.makeBorderCircle {
+				border-radius: 50%;
+				border:1px solid black;
+			}
+				/* removes all margins and padding */
+				* {
+					margin: 0;
+					padding: 0;
+				}
+			
+/*****************************************************************************/
+
+			/* Big middle circle with memes */
+			#memeContainer {
+				width:24vmin;
+				height:24vmin;
+				position:absolute;
+				font-size:8vmin;
+			}
+			#outerPeopleBoundry{
+				width:99vmin;
+				height:99vmin;
+				position:absolute;
+				display:none;
+			}
+			/* What the circles with names in them look like */
+			.person{
+				width:12vmin;
+				height:12vmin;
+				font-size:3vmin;
+				position:absolute;
+				display:none;
+			}
+/*****************************************************************************/
+
+			.event{
+				width:7vmin;
+				height:7vmin;
+				font-size:2vmin;
+				position:absolute;
+				
+			}
+			.eventContainer{
+				position:absolute;
+			}
+		</style>
+	</head >
+	
+	<body class="centerInsides" onload="displayOnlyPerson('none');">
+		<div id="outerPeopleBoundry" class="makeBorderCircle" onmouseout="displayOnlyPerson('none');"></div>
+		<div id ="memeContainer" class="makeBorderCircle centerInsides" onmouseover="displayOnlyPerson('allPeople');"><div>memes</div></div>
+			<div id="shawn" class="person centerInsides makeBorderCircle" onmouseover="displayOnlyPerson('shawn');"><div>Shawn</div>
+				<div id="shawnEvent" class="eventContainer centerInsides">
+					<a id="shev1" class="event makeBorderCircle centerInsides">About</a>
+					<a href="http://dankmeme.team/grapher/" id="shev2" class="event makeBorderCircle centerInsides">Grapher</a>
+					<a href="http://dankmeme.team/grade/Grade/" id="shev3" class="event makeBorderCircle centerInsides">Web D</a>
+					<a id="shev4" class="event makeBorderCircle centerInsides"></a>
+					<a id="shev5" class="event makeBorderCircle centerInsides"></a>
+				</div> 
+			</div>
+			<div id="eion" class="person centerInsides makeBorderCircle" onmouseover="displayOnlyPerson('eion');"><div>Eion</div>
+				<div id="eionEvent" class="eventContainer centerInsides">
+					<a id="ehev1" class="event makeBorderCircle centerInsides">About</a>
+					<a id="ehev2" class="event makeBorderCircle centerInsides"></a>
+					<a id="ehev3" class="event makeBorderCircle centerInsides"></a>
+					<a id="ehev4" class="event makeBorderCircle centerInsides"></a>
+				</div> 
+			</div>
+			<div id ="chance" class="person centerInsides makeBorderCircle" onmouseover="displayOnlyPerson('chance');"><div>Chance</div>
+				<div id="chanceEvent" class="eventContainer centerInsides">
+					<a id="cmev1" class="event makeBorderCircle centerInsides">About</a>
+					<a id="cmev2" class="event makeBorderCircle centerInsides"></a>
+					<a id="cmev3" class="event makeBorderCircle centerInsides"></a>
+					<a id="cmev4" class="event makeBorderCircle centerInsides"></a>
+				</div> 
+			</div>
+			<div id="zach" class="person centerInsides makeBorderCircle" onmouseover="displayOnlyPerson('zach');"><div>Zach</div>
+				<div id="zachEvent" class="eventContainer centerInsides">
+					<a id="zsev1" class="event makeBorderCircle centerInsides">About</a>
+					<a id="zsev2" class="event makeBorderCircle centerInsides"></a>
+					<a id="zsev3" class="event makeBorderCircle centerInsides"></a>
+					<a id="zsev4" class="event makeBorderCircle centerInsides"></a>
+				</div> 
+			</div>
+			<div id="jake" class="person centerInsides makeBorderCircle" onmouseover="displayOnlyPerson('jake');"><div>Jake</div>
+				<div id="jakeEvent" class="eventContainer centerInsides">
+					<a id="jjev1" class="event makeBorderCircle centerInsides">About</a>
+					<a id="jjev2" class="event makeBorderCircle centerInsides"></a>
+					<a id="jjev3" class="event makeBorderCircle centerInsides"></a>
+					<a id="jjev4" class="event makeBorderCircle centerInsides"></a>
+				</div> 
+			</div>
+			<div id="joe" class="person centerInsides makeBorderCircle" onmouseover="displayOnlyPerson('joe');"><div>Joe</div>
+				<div id="joeEvent" class="eventContainer centerInsides">
+					<a id="jcev1" class="event makeBorderCircle centerInsides">About</a>
+					<a id="jcev2" class="event makeBorderCircle centerInsides"></a>
+					<a id="jcev3" class="event makeBorderCircle centerInsides"></a>
+					<a id="jcev4" class="event makeBorderCircle centerInsides"></a>
+				</div> 
+			</div>
+			<div id="nico" class="person centerInsides makeBorderCircle" onmouseover="displayOnlyPerson('nico');"><div>Nico</div>
+				<div id="nicoEvent" class="eventContainer centerInsides">
+					<a id="niev1" class="event makeBorderCircle centerInsides">About</a>
+					<a id="niev2" class="event makeBorderCircle centerInsides"></a>
+					<a id="niev3" class="event makeBorderCircle centerInsides"></a>
+					<a id="niev4" class="event makeBorderCircle centerInsides"></a>
+				</div> 
+			</div>
+
+		
+	</body>
+	<script>
+		// Assigns the correct css for rotations on everyone
+			// Just follow the correct setup and easy peasy
+		var numPeople = document.body.childNodes;
+		var actualPeople =  (numPeople.length/2)-3
+		var actualCounter =0;
+		var actualPeopleArray = [];
+		for(var i = 5; i < numPeople.length-2; i+=2){
+			numPeople[i].style.transform = "rotate("+((360/actualPeople)*actualCounter)+270+"deg) translate(40vmin) rotate(-"+((360/actualPeople)*actualCounter)+270+"deg)";
+			actualPeopleArray[actualCounter] = numPeople[i];
+			actualCounter++;
+		}
+		
+		for(var j =0; j < actualPeopleArray.length; j++){
+			var rotateatrons = (360/actualPeopleArray.length)*j;
+			var eventCount = ((actualPeopleArray[j].childNodes[2].childNodes.length-1)/2);
+			var actualEvents =0;
+			for(var q = 1; q < actualPeopleArray[j].childNodes[2].childNodes.length; q+=2){
+				var currentEvent = actualPeopleArray[j].childNodes[2].childNodes[q];
+				var rotateamount = (180/(eventCount-1))*actualEvents +rotateatrons+90;
+				currentEvent.style.transform = "rotate("+rotateamount+"deg) translate(20vmin) rotate(-"+rotateamount+"deg)";
+				actualEvents++;
+			}
+		}
+		function displayOnlyPerson(person){
+			// Clear the board
+			for(var i = 0; i < actualPeopleArray.length; i++){
+				actualPeopleArray[i].style.display='none';
+				actualPeopleArray[i].childNodes[2].style.display='none';
+			}
+			document.getElementById("outerPeopleBoundry").style.display='none';
+
+			switch(person){
+				case "allPeople":
+					for(var i = 0; i < actualPeopleArray.length; i++){
+						actualPeopleArray[i].style.display='flex';
+					}
+					document.getElementById("outerPeopleBoundry").style.display='flex';
+					break;
+				case "allPeopleEvent":
+					for(var i = 0; i < actualPeopleArray.length; i++){
+						actualPeopleArray[i].style.display='flex';
+						actualPeopleArray[i].childNodes[2].style.display='flex';
+					}
+					document.getElementById("outerPeopleBoundry").style.display='flex';
+					break;
+				case "none":
+					break;				
+				default:
+					document.getElementById(person).style.display='flex';
+					document.getElementById(person+"Event").style.display='flex';
+					document.getElementById("outerPeopleBoundry").style.display='flex';
+					break;
+			}
+	}
+	</script>
+</html>

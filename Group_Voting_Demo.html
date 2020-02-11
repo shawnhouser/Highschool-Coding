@@ -1,0 +1,230 @@
+<html>
+	<head>
+		<style>
+			tbody tr:nth-child(odd){background-color:#ccc;}
+			th, td, input{width:100px;}
+			
+		</style>
+	</head>
+	<body>
+		<button style="float:left;" onclick="addRow(document.getElementsByTagName('table')[0], 6)">Add Row</button>
+		<div style="float:left; margin-left:10px;">Number of Seats</div><input id="numOfSeats" type="number"></input></div>
+		<button style="magin-left:10px;" onclick="doEverything()">Evaluate</button>
+		<table>
+			<thead>
+				<tr>
+					<th>Population</th>
+					<th>Quota</th>
+					<th>Jefferson</th>
+					<th>Hammilton</th>
+					<th>Webster</th>
+					<th>Hill</th>
+				</tr>
+			</thead>
+			<tbody>
+			</tbody>
+		</table>
+	</body>
+	<script>
+	function addRow(table, length){
+		var tbody = table.getElementsByTagName("tbody")[0];
+		var length = table.getElementsByTagName("thead")[0].rows[0].cells.length;
+		var tableRow = document.createElement("tr");
+		tableRow.innerHTML += "<td><input type=\"number\"></input></td>"
+		for(var i = 1; i < length; i++){
+			tableRow.innerHTML += "<td>0</td>"
+		}
+		tbody.appendChild(tableRow);
+	//	tbody.rows[0].cells.length
+	}
+	function doEverything(){
+		var table = importTable(document.getElementsByTagName("tbody")[0]);
+		
+		var seats = document.getElementById("numOfSeats").value;
+		var populationArray = turnColmnIntoArray(table, 0);
+		var totalPopulation = sumOfArray(populationArray);
+		var idealRatio = totalPopulation/seats;
+
+		var quota = getQuotaArray(populationArray, idealRatio);                           turnArrayIntoColumn(table, quota, 1); 
+		var jefferson = jeffersonMethod(quota, seats);                                    turnArrayIntoColumn(table, jefferson, 2); 
+		var hammilton = roundingMethods(populationArray, idealRatio, seats, "Hammilton"); turnArrayIntoColumn(table, hammilton, 3);
+		var webster =   roundingMethods(populationArray, idealRatio, seats, "Webster");   turnArrayIntoColumn(table, webster, 4);
+		var hill =      roundingMethods(populationArray, idealRatio, seats, "Hill");      turnArrayIntoColumn(table, hill, 5);
+		var header = ["Population", "Quota", "Jefferson", "Hammilton", "Webster", "Hill"];
+		outputTable(table, header, 0)
+	}
+	function roundingMethods(populationArray, imd, totalSeats, roundingType){
+		var lastSign = "";
+		var depth = 0;
+		var modifierValue = 0;
+		function doRoundingMethods(md){
+			var rounded = populationArray.map(function(x){
+				if(roundingType == "Hill"){
+					return geometricRound(x/md);
+				} else if(roundingType == "Webster"){
+					return Math.round(x/md);
+				} else {
+					return Math.floor(x/md);
+				}
+			});
+			var sum = sumOfArray(rounded)
+			if(sum < totalSeats){
+				if(lastSign == "+"){    depth--;    }
+				lastSign = "-";
+				modifierValue = Math.pow(10, depth);
+				return doRoundingMethods(md - modifierValue)
+			} else if(sum > totalSeats){
+				if(lastSign == "-"){    depth--;    }
+				lastSign = "+";
+				modifierValue = Math.pow(10, depth);
+				return doRoundingMethods(md + modifierValue)
+			} else {
+				return rounded;
+			}
+		}
+		return doRoundingMethods(imd);
+	}
+
+	function geometricRound(inputNumber){
+		var floor = Math.floor(inputNumber);
+		var celin = floor + 1;
+		var roundingFactor = Math.sqrt(floor * celin);
+		if(inputNumber < roundingFactor){
+			return floor;
+		} else {
+			return celin;
+		}
+	}
+
+	function jeffersonMethod(quotaArray, totalSeats){
+		var remainder = quotaArray.map(function(x){
+			return x - Math.floor(x);
+		});
+		var truncated = quotaArray.map(function(x){
+			return Math.floor(x);
+		});
+		var sum = sumOfArray(truncated);
+		if(sum < totalSeats){
+			while(sum < totalSeats){
+				var max = Math.max.apply(null, remainder);
+				var maxIndex = remainder.indexOf(max);
+				truncated[maxIndex]++;
+				remainder[maxIndex] = 0;
+				sum++;
+			}
+		}
+		return truncated;
+	}
+	function sumOfArray(inputArray){
+		return inputArray.reduce(function(a, b) { return a + b; }, 0);
+	}
+	function turnArrayIntoColumn(outputArray, inputArray, columnNumber){
+		var numOfRow = inputArray.length;
+		for(var y = 0; y < numOfRow; y++){
+			outputArray[y][columnNumber] = inputArray[y];
+		}
+		return outputArray;
+	}
+	function turnColmnIntoArray(inputArray, columnNumber){
+		var returnArray = [];
+		var numOfRow = inputArray.length;
+		for(var y = 0; y < numOfRow; y++){
+			returnArray[y] = inputArray[y][columnNumber];
+		}
+		return returnArray;
+	}
+	
+	/* Outputs a two Dimensional array to a HTML table */
+	/* takes input of
+		a two dimensional array
+		a column that is designated to be the input, if not supplied it defaults to 0		*/
+	function outputTable(inputArray, headerArray, inputCol = 0){
+		var table = document.createElement("table"); // create a variable "table" that is a HTML table
+		var tableHead = document.createElement("thead"); // create "tableHead" which is the header of a HTML table
+		/* set "tableHead" to have some standard header information */
+		var texttoAdd = "<tr>";    for(x in headerArray){    texttoAdd += "<th>"+headerArray[x]+"</th>";    }    texttoAdd += "</tr>";
+		tableHead.innerHTML = texttoAdd;
+		
+		var tableBody = document.createElement("tbody"); // create "tableBody" which is the body of a HTML table
+		var numOfRow = inputArray.length; // set "numOfRow" to the length of the two dimensional array
+		var numOfCol = inputArray[0].length; // set "numOfCol" to the length of the first array in the two dimensional array ( the length of a row )
+		for(var y = 0; y < numOfRow; y++){ // for all rows with a counter y
+			var tableRow = document.createElement("tr"); // create "tableRow" a row in a HTML table
+			for(var x = 0; x < numOfCol; x++){ // for all columns with a counter x
+				var truncedNumber = trunc(inputArray[y][x], 7); // set "truncedNumber" to the current value at [y][x] truncated to 7 digits
+				/* set htmlToAdd to
+					display the value truncedNumber when in an HTML table
+					( this is shorthand for creating a new HTML element to hold the data in an HTML table )		*/
+				var htmlToAdd = "<td>" + truncedNumber + "</td>";
+				if(x == inputCol){ // if this current column is supposed to be an input
+					/* change "htmlToAdd" to be an input form with the value as truncedNumber */
+					htmlToAdd = "<td><input type=\"number\" value=\"" + truncedNumber + "\"></input></td>";
+				} // end if statement
+
+				tableRow.innerHTML += htmlToAdd; // add "htmlToAdd" onto "tableRow"
+			} // end current row loop, ( looping through all columns, aka all values on a row )
+			tableBody.appendChild(tableRow); // add the current, completed, row to the tableBody
+		} // end looping through all of the rows
+		table.appendChild(tableHead); // add "tableHead" to the HTML table
+		table.appendChild(tableBody); // add "tableBody" to the HTML table
+		document.body.removeChild(document.getElementsByTagName("table")[0]); // remove the current HTML table
+		document.body.appendChild(table); // replace it with the new HTML table
+	}
+
+	/* Imports the values from an HTML table into a two dimensional array */
+	function importTable(tableNode){ // Take input of a HTML table
+    	var returnArray = []; // Set "returnArray" to be an empty array
+		var numOfRow = tableNode.rows.length; // set "numOfRow" to the length of the rows in the HTML table
+		var numOfCol = tableNode.rows[0].cells.length; // set "numOfCol" to the length of the first row in the HTML table
+    	for(var y = 0; y < numOfRow; y++){ // for all of the rows, with a counter y
+			returnArray[y] = []; // set the current index in the array to another empty array, making the returnArray a two dimensional array
+    	    var row = tableNode.rows[y].cells; // set "row" to an array of the cells in the current row
+			for(var x = 0; x < numOfCol; x++){ // for all of the columns in the table, with a counter x
+				/* set the spot [y][x] in "returnArray" to
+					the value of an input field                        OR
+					the value of text in this spot on the HTML table   OR
+					0
+					AND
+					read the value as an integer		*/
+				returnArray[y][x] = parseInt(row[x].childNodes[0].value || row[x].innerText || 0);
+			} // end loop for columns in a row
+    	} // end loop for row
+		return returnArray; // return a two dimensional array with the values from an HTML table
+	} // end function
+
+	/* Truncates a number to a given decimal position */
+	function trunc(number, position){ // Takes inputs of a number and how many decimal places
+		var multiplier = Math.pow(10, position); // set "multiplier" to 10^position
+		/* truncate (the number * the multiplier) / the multiplier
+			10.0341 * 10^2   ->
+			1003.41          ->
+			TRUNC()          ->
+			1003             ->
+			divide by 10^2   ->
+			10.03		*/
+		return Math.trunc(number * multiplier)/multiplier;
+	} // end function
+	
+
+	/* changes a column to the number of votes a population should have */
+	/* takes inputs of 
+		a two dimensional array
+		the column that the populations are stored in
+		the column that the outputs should be sent to
+		the number of seats that can be allocated		*/
+	function getQuotaArray(populationArray, idealRatio){
+		/* set "totalPopulation" to the return value of "sumOfColum()" using inputs
+			the two dimensional array that was input the this function
+			the column that was said to hold the population of each group		*/
+		var returnArray = []
+		var numOfRow = populationArray.length; // sets "numOfRow" to the length of the input array ( the number of rows in a two dimensional array )
+		for(var y = 0; y < numOfRow; y++){ // for all rows in the two dimensional array, with counter y
+			/* set quota to
+				the position in the two dimensional array of [currentRow][desired input column]
+				divided by the ideal ratio		*/
+			returnArray[y] = populationArray[y] / idealRatio;
+		} // end looping through rows
+		return returnArray; // return the same two dimensional array, but with the desired output column changed
+	} // end function
+	</script>
+</html>

@@ -1,0 +1,459 @@
+<!DOCTYPE HTML>
+<html>
+	<head>	
+		<style>
+			/* http://www.1001fonts.com/mahamaya-font.html */
+			@font-face{
+				font-family: 'Mahamaya';
+				src: url(Mahamaya.otf);
+			}
+			html, body, canvas {
+				padding: 0px;
+				margin: 0px;
+			}
+			#gameField {
+				font-family: monospace;
+				position: fixed;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%, -50%);
+				line-height: 9px;
+				display:none;
+			}
+			#inputText {
+				font-family: monospace;
+				position: fixed;
+				font-family: Mahamaya;
+				top:50%;
+				left:50%;
+				transform: translate(-50%, -50%);
+				font-size: 400%;
+				text-align: center;
+			}
+			#messageText{
+				font-family: monospace;
+				font-family: Mahamaya;
+				position: fixed;
+				top:5%;
+				left:50%;
+				transform: translate(-50%, 0);
+				font-size: 400%;
+			}
+			.b {
+				height:9px;
+				width:9px;
+				float:left;
+			}
+			/* Color Blind Mode settings */
+			.t, .w {
+				font-size:9px;
+			}
+			/* Tile */
+			.T {
+				background-color: #AAA;
+			}
+			/* Wall */
+			.W {
+				background-color: #333;
+			}
+			/* Character */
+			.C {
+				background-color:#3CC;
+			}
+			@-webkit-keyframes redToWhite {
+				0% {color:red;}
+				100% {color:white;}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="messageText">ENTER NAME</div>
+		<form id="inputForm" onsubmit="getCharacterName();return false;">
+			<input id="inputText" type="text">
+		</form>
+		<div id="gameField"></div>
+	</body>
+	<script type="text/javascript">
+		// Makes gameField reference the div gameField
+		var gameField = document.getElementById("gameField");
+		
+		// This is to define the land
+		var land = [];
+		// Some Simple variables relating to the character
+		// I wanted min and max view ranges in here but couldn't
+		var character = {
+			// ViewRange = View Distance in any Direction from cords
+			viewRange: 2,
+			// Cordinates on the map
+			cordx: 150,
+			cordy: 150,
+			// This is the 'image' the character chose to use
+			image: '+'
+		};
+		// These are settings that I have made to go into the game
+		var settings = {
+			// Replaces colors with text
+			colorBlind: false
+		};
+		var world = {
+			// This has all the important stuff about the blocks used in the world
+			// durring building it and durring playing it
+			blocks: {
+				// name = name on screen for color blind mode
+				wall: "&#x25A9",
+				// nameChar = name used in the big array holding all the world information
+				wallChar: "W",
+				tile: "&#x25A2",
+				tileChar: "T"
+			},
+			// Size of the world, length of the side of a giant square
+			size: 300,
+			// Number of rooms to be placed
+			rooms: 30,
+			// Max and minimum size of a room
+			roomMax: 9,
+			roomMin: 3,
+			// Max and Min Hall width
+			hallMaxw: 1,
+			hallMinw: 1,
+			// Size in one dirrection from the middle of the world
+			startRoomSize: 2,
+		};
+		
+		// This changes Global CSS allowing for persistent CSS on walls and other things touched
+		// http://stackoverflow.com/questions/15493965/define-global-css-classes-using-javascript-or-jquery
+		var stastyle = document.createElement('style');
+		// EXAMPLE css = '{color:red;}'
+		function addCSS(y, x, css) {
+			stastyle.type = 'text/css';
+			if(stastyle.styleSheet) {
+				stastyle.styleSheet.cssText = '#a' + y + '_' + x + css;
+			} else {
+				stastyle.appendChild(document.createTextNode('#a' + y + '_' + x + css));
+			}
+			document.getElementsByTagName('head')[0].appendChild(stastyle);
+		}
+	
+		
+		inputText=document.getElementById('inputText');
+		messageText=document.getElementById('messageText');
+		function getCharacterName() {
+			if(inputText.value.length == 1) {
+				character.image = inputText.value;
+				inputText.style.display = 'none';
+				messageText.style.display = 'none';
+				gameField.style.display = 'block';
+				makeLand();
+				drawLand();
+			} else if(inputText.value.length >= 2) {
+				messageText.style.color = 'white';
+				messageText.innerHTML="SHORTER";
+				messageText.style.WebkitAnimation = 'redToWhite .75s';
+				setTimeout(function(){
+					messageText.style.color = 'black';
+					messageText.style.WebkitAnimation = '';
+					messageText.innerHTML = 'ENTER NAME';
+				}, 750);
+			} else {
+				messageText.style.color = 'white';
+				messageText.innerHTML="LONGER";
+				messageText.style.WebkitAnimation = 'redToWhite .75s';
+				setTimeout(function(){
+					messageText.style.color = 'black';
+					messageText.style.WebkitAnimation = '';
+					messageText.innerHTML = 'ENTER NAME';
+				}, 750);
+			}
+		}
+		
+		
+		
+		
+		
+		
+		var dlcx, dlcy;
+		
+		// Misc
+		// Half the world size
+		if(world.size % 2) {
+			var hwrd = (world.size - 1) / 2;
+		} else {
+			var hwrd = world.size / 2;
+		}
+		// Half the starting room size
+		// Is not fancy like hwrd because this will always be
+		// an odd number by an odd number
+		
+		
+		
+		
+		// This makes an area from and including (startx, starty) to (endx, endy)
+		// All the if statements could be avoided with a switch I beleive
+		// It doesn't look nice but it works damn good.
+		var xvc, yvc;
+		
+		function makeTile(startx, endx, starty, endy, material) {
+			if(starty > endy) {
+				if(startx > endx) {
+					// Sy>Ey && Sx>Ex
+					for(yvc = starty; yvc > endy - 1; yvc--) {
+						for(xvc = startx; xvc > endx - 1; xvc--) {
+							if((xvc < world.size) && (yvc < world.size) && (xvc >= 0) && (yvc >= 0)) {
+								land[yvc][xvc] = material;
+							}
+						}
+					}
+				} else if(startx < endx) {
+					// Sy>Ey && Sx<Ex
+					for(yvc = starty; yvc > endy - 1; yvc--) {
+						for(xvc = startx; xvc < endx + 1; xvc++) {
+							if((xvc < world.size) && (yvc < world.size) && (xvc >= 0) && (yvc >= 0)) {
+								land[yvc][xvc] = material;
+							}
+						}
+					}
+				} else if(startx == endx) {
+					// Sy>Ey && Sx=Ex
+					for(yvc = starty; yvc > endy - 1; yvc--) {
+						if((startx < world.size) && (yvc < world.size) && (startx >= 0) && (yvc >= 0)) {
+							land[yvc][startx] = material;
+						}
+					}
+				}
+			} else if(starty < endy) {
+				if(startx > endx) {
+					// Sy<Ey && Sx>Ex
+					for(yvc = starty; yvc < endy + 1; yvc++) {
+						for(xvc = startx; xvc > endx - 1; xvc--) {
+							if((xvc < world.size) && (yvc < world.size) && (xvc >= 0) && (yvc >= 0)) {
+								land[yvc][xvc] = material;
+							}
+						}
+					}
+				} else if(startx < endx) {
+					// Sy<Ey && Sx<Ex
+					for(yvc = starty; yvc < endy + 1; yvc++) {
+						for(xvc = startx; xvc < endx + 1; xvc++) {
+							if((xvc < world.size) && (yvc < world.size) && (xvc >= 0) && (yvc >= 0)) {
+								land[yvc][xvc] = material;
+							}
+						}
+					}
+				} else if(startx == endx) {
+					// Sy<Ey && Sx=Ex
+					for(yvc = starty; yvc < endy + 1; yvc++) {
+						if((startx < world.size) && (yvc < world.size) && (startx >= 0) && (yvc >= 0)) {
+							land[yvc][startx] = material;
+						}
+					}
+				}
+			} else if(starty == endy) {
+				if(startx > endx) {
+					// Sy=Ey && Sx>Ex
+					for(xvc = startx; xvc > endx - 1; xvc--) {
+						if((xvc < world.size) && (starty < world.size) && (xvc >= 0) && (starty >= 0)) {
+							land[starty][xvc] = material;
+						}
+					}
+				} else if(startx < endx) {
+					// Sy=Ey && Sx<Ex
+					for(xvc = startx; xvc < endx + 1; xvc++) {
+						if((xvc < world.size) && (starty < world.size) && (xvc >= 0) && (starty >= 0)) {
+							land[starty][xvc] = material;
+						}
+					}
+				} else if(startx == endx) {
+					// Sy=Ey && Sx=Ex
+					if((startx < world.size) && (starty < world.size) && (startx >= 0) && (starty >= 0)) {
+						land[starty][startx] = material;
+					}
+				}
+			}
+		}
+		
+		
+		
+		
+		// This is where the actual making of the land happens
+		// MakeLandCounterX/Y
+		// RoomCounter, RoomStartX/Y, RoomX/Y (as in length)
+		// ThisRoomX/Y (center of the room), HallwayWidth, LastRoomX/Y (center of the room)
+		var mlcx, mlcy;
+		var rmc, rmsx, rmsy, rmx, rmy;
+		var trmx, trmy, hw, lrmx, lrmy;
+		
+		function makeLand() {
+			// This clears the land array because of the decleration above.
+			land = [];
+			// Makes Everything Walls
+			for(mlcx = 0; mlcx < world.size; mlcx++) {
+				// This makes sure that the array becomes 2d
+				// It declares another array inside the current level, then fills that
+				land[mlcx] = [];
+				for(mlcy = 0; mlcy < world.size + 1; mlcy++) {
+					// Just sets it to the wall char
+					land[mlcx][mlcy] = world.blocks.wallChar;
+				}
+			}
+			
+			
+			
+			// This is where the real fun Starts
+			// This is what makes the rooms and the hallways connecting them
+			// How this works is. Make Room -> Connect this room to the last room -> Repeat
+			// This means that there will be no dead ends and everywhere will be accessible
+			// I prefer this method of the original one I thought of, Which was random hallways
+			// Though it may be more work, it has nicer results and will make all of the game possible
+			// for every roll of the random world you get
+			for(rmc = 0; rmc < world.rooms; rmc++) {
+				// Math.round() is used for these because I am okay with it being off a little bit.
+				// Gets a random, Height and Width (Y and X respectively) and saves it
+				rmx = Math.round(Math.random() * (world.roomMax - world.roomMin) + world.roomMin);
+				rmy = Math.round(Math.random() * (world.roomMax - world.roomMin) + world.roomMin);
+				// Gets a random Starting Point in the world
+				rmsx = Math.round(Math.random() * world.size);
+				rmsy = Math.round(Math.random() * world.size);
+				// This is what makes a room
+				// It's not that hard, the hard part is the hallways
+				makeTile(rmsx, rmsx + rmx - 1, rmsy, rmsy + rmy - 1, world.blocks.tileChar);
+				// ThisRoomY/X
+				trmx = Math.round(rmsx + (rmx / 2) - 1);
+				trmy = Math.round(rmsy + (rmy / 2) - 1);
+				hw = Math.ceil(Math.random() * (world.hallMaxw - world.hallMinw + 1)) - 1;
+				if(rmc === 0) {
+					// X
+					makeTile(hwrd, trmx, hwrd, hwrd + hw, world.blocks.tileChar);
+					// Y
+					makeTile(trmx, trmx + hw, trmy, hwrd, world.blocks.tileChar);
+				} else if(rmc !== 0) {
+					// X
+					makeTile(trmx, lrmx, trmy, trmy + hw, world.blocks.tileChar);
+					// Y
+					makeTile(lrmx, lrmx + hw, trmy, lrmy, world.blocks.tileChar);
+				}
+				lrmx = Math.round(rmsx + (rmx / 2) - 1);
+				lrmy = Math.round(rmsy + (rmy / 2) - 1);
+			}
+			makeTile(hwrd-world.startRoomSize, hwrd+world.startRoomSize, hwrd-world.startRoomSize, hwrd+world.startRoomSize, world.blocks.tileChar);
+			character.cordx = hwrd;
+			character.cordy = hwrd;
+		}	
+	
+		// Sets the character cordinates to the correct areat
+		
+		
+		
+		
+		// This is to define these variables
+		// They are used for maping out the space to reference in the
+		// big land array
+		var minViewx, maxViewx, minViewy, maxViewy;
+		
+		
+		
+		function drawLand() {
+			gameField.innerHTML = "";
+			
+			minViewx = (character.cordx - character.viewRange);
+			maxViewx = (character.cordx + character.viewRange);
+			minViewy = (character.cordy - character.viewRange);
+			maxViewy = (character.cordy + character.viewRange);
+			
+			if(settings.colorBlind) {
+				for(dlcy = minViewy; dlcy < maxViewy + 1; dlcy++) {
+					for(dlcx = minViewx; dlcx < maxViewx + 1; dlcx++) {
+						if(dlcx == character.cordx && dlcy == character.cordy) {
+							gameField.innerHTML = gameField.innerHTML + '<div class="b" id="characterImage">' + character.image + '</div>';
+							// If the spot is off the map replace it with a space
+							// Used when you reach the edge to keep it centered.
+						} else if((dlcy < 0 || dlcx < 0) || (dlcy > land.length - 1 || dlcx > land.length - 1)) {
+							gameField.innerHTML = gameField.innerHTML + '<div class="b" id="a' + dlcy + '_' + dlcx + '"> </div>';
+							// If nothing else, check whats in the array
+						} else {
+							// If it's a Tile make it a tile
+							if(land[dlcy][dlcx] == world.blocks.tileChar) {
+								gameField.innerHTML = gameField.innerHTML + '<div class="t b" id="a' + dlcy + '_' + dlcx + '">' + world.blocks.tile + '</div>';
+								// If it's a wall make it a wall
+							} else if(land[dlcy][dlcx] == world.blocks.wallChar) {
+								gameField.innerHTML = gameField.innerHTML + '<div class="w b" id="a' + dlcy + '_' + dlcx + '">' + world.blocks.wall + '</div>';
+								// Set it to whats in the array
+							} else {
+								gameField.innerHTML = gameField.innerHTML + '<div class="u b" id="a' + dlcy + '_' + dlcx + '">' + land[dlcy][dlcx] + '</div>';
+							}
+						}
+						if(dlcx == maxViewx) {
+							gameField.innerHTML = gameField.innerHTML + "<br>";
+						}
+					}
+				}
+			} else {
+				for(dlcy = minViewy; dlcy < maxViewy + 1; dlcy++) {
+					for(dlcx = minViewx; dlcx < maxViewx + 1; dlcx++) {
+						if((dlcx == character.cordx) && (dlcy == character.cordy)) {
+							gameField.innerHTML = gameField.innerHTML + '<div class="C b" id="characterImage">' + character.image + '</div>';
+							// If the spot is off the map replace it with a space
+							// Used when you reach the edge to keep it centered.
+						} else if((dlcy < 0 || dlcx < 0) || (dlcy > land.length - 1 || dlcx > land.length - 1)) {
+							gameField.innerHTML = gameField.innerHTML + '<div class="b" id="a' + dlcy + '_' + dlcx + '"> </div>';
+							// If nothing else, set it to whats in the array
+						} else {
+							// If It's a tile
+							if(land[dlcy][dlcx] == world.blocks.tileChar) {
+								gameField.innerHTML = gameField.innerHTML + '<div class="T b" id="a' + dlcy + '_' + dlcx + '"></div>';
+								// If it's a wall
+							} else if(land[dlcy][dlcx] == world.blocks.wallChar) {
+								gameField.innerHTML = gameField.innerHTML + '<div class="W b" id="a' + dlcy + '_' + dlcx + '"></div>';
+								// If its anything else
+							} else {
+								gameField.innerHTML = gameField.innerHTML + '<div class="U b" id="a' + dlcy + '_' + dlcx + '"> </div>';
+							}
+						}
+						if(dlcx == maxViewx) {
+							gameField.innerHTML = gameField.innerHTML + "<br>";
+						}
+					}
+				}
+			}
+		} 
+		
+		
+		function move(xchange, ychange) {
+			var wanty = character.cordy + ychange;
+			var wantx = character.cordx + xchange;
+			if(land[wanty][wantx] != world.blocks.wallChar) {
+				character.cordy = wanty;
+				character.cordx = wantx;
+				drawLand();
+			} else {
+				if(settings.colorBlind) {
+					addCSS(wanty, wantx, '{color:red;}');
+				} else {
+					addCSS(wanty, wantx, '{background-color:red;}');
+				}
+			}
+		}
+		
+		
+		
+		
+		document.addEventListener("keydown", keyDownHandler, false);
+		function keyDownHandler(key) {
+			switch(key.keyCode) {
+			case 37: // Left
+				move(-1, 0);
+				break;
+			case 38: // Down
+				move(0, -1);
+				break;
+			case 39: // Right
+				move(1, 0);
+				break;
+			case 40: // Up
+				move(0, 1);
+				break;
+			default:
+				console.log(key.keyCode);
+			}
+		}
+	</script>
+</html>

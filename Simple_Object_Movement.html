@@ -1,0 +1,187 @@
+<html>
+	<head>
+		
+		<style>
+			#gameField{
+				background: red;
+				display: block;
+			}
+			/* http://stackoverflow.com/questions/11802788/get-rid-of-padding-margin-around-canvas-element */
+			html, body, canvas {
+				padding: 0px;
+				margin: 0px;
+			}
+		</style>
+	</head>
+	<body onload="makeBall()">
+		<canvas id="gameField" onclick="clearBall()"></canvas>
+		
+		
+		
+		
+		
+	</body>
+	
+	
+	
+	<!-- http://stackoverflow.com/questions/436411/where-is-the-best-place-to-put-script-tags-in-html-markup -->
+	<script type="text/javascript">
+	//	document.addEventListener("keydown", keyDownHandler, false);
+	//	document.addEventListener("keyup", keyUpHandler, false);
+	//	document.addEventListener("mousemove", mouseMoveHandler, false);
+		
+	// http://stackoverflow.com/questions/27705977/html-canvas-making-blurry-shapes
+		var canvas = document.getElementById("gameField");
+		canvas.width  = window.innerWidth;
+		canvas.height = window.innerHeight;
+		var ctx=canvas.getContext("2d");
+		
+		var ball = {
+			cord:{
+				x:100,
+				y:100,
+				wantx:100,
+				wanty:100
+			},
+			radius:10,
+			direction:{
+				left:false,
+				right:false,
+				up:false,
+				down:false
+			},
+			speed:5,
+			theta:1337
+		}
+/*		// http://www.javascripter.net/faq/keycodes.htm
+			function keyDownHandler(key) {
+				switch(key.keyCode) {
+					case 37 :
+						ball.direction.left=true;
+						break;
+					case 38 :
+						ball.direction.down=true;
+						break;
+					case 39 : 	
+						ball.direction.right=true;
+						break;
+					case 40 :
+						ball.direction.up=true;
+						break;
+					default:
+						console.log(key);
+				}
+			}
+			function keyUpHandler(key) {
+				switch(key.keyCode) {
+					case 37 /*Left :
+						ball.direction.left=false;
+						break;
+					case 38 /*Down:
+						ball.direction.down=false;
+						break;
+					case 39 /*Right: 	
+						ball.direction.right=false;
+						break;
+					case 40 /*Up:
+						ball.direction.up=false;
+						break;
+					default:
+						console.log(key);
+				}
+			}
+			
+			function changeBallCords() {
+				if(ball.direction.left){
+					ball.cord.wantx=ball.cord.x-ball.speed;
+				}
+				if(ball.direction.down){
+					ball.cord.wanty=ball.cord.y-ball.speed;
+				}
+				if(ball.direction.right){
+					ball.cord.wantx=ball.cord.x+ball.speed;
+				}
+				if(ball.direction.up){
+					ball.cord.wanty=ball.cord.y+ball.speed;
+				}
+			}
+			*/
+		function getMousePos(canvas, evt) {
+			var rect = canvas.getBoundingClientRect();
+			return {
+				x: evt.clientX - rect.left,
+				y: evt.clientY - rect.top
+			};
+		}
+		canvas.addEventListener('mousedown', function(evt) {
+			var mousePos = getMousePos(canvas, evt);
+			ball.cord.wantx = mousePos.x;
+			ball.cord.wanty = mousePos.y;
+			slowMove();
+		}, false);
+			
+		function slowMove() {
+			ball.theta=Math.atan2((ball.cord.y-ball.cord.wanty), (ball.cord.x-ball.cord.wantx));
+				if((ball.cord.x<=ball.cord.wantx-(ball.speed*Math.cos(ball.theta)) && ball.cord.x>=ball.cord.wantx+(ball.speed*Math.cos(ball.theta))) || (ball.cord.y<=ball.cord.wanty-(ball.speed*Math.sin(ball.theta)) && ball.cord.y>=ball.cord.wanty+(ball.speed*Math.sin(ball.theta)))){
+					ball.theta=1337;
+					ball.cord.x=ball.cord.wantx;
+					ball.cord.y=ball.cord.wanty;
+				}
+			if(ball.theta != 1337){
+				ball.cord.x=(-ball.speed*Math.cos(ball.theta))+ball.cord.x;
+				ball.cord.y=(-ball.speed*Math.sin(ball.theta))+ball.cord.y;	
+			}
+		}
+			
+			
+			
+			function makeBall() {
+				ctx.beginPath();
+				ctx.arc(ball.cord.x,ball.cord.y,ball.radius,0,2*Math.PI);
+				ctx.fillStyle = "#0095DD";
+				ctx.fill();
+				ctx.closePath();
+				
+				ctx.beginPath();
+				ctx.moveTo(100,100);
+				ctx.lineTo(100,300);
+				ctx.stroke();
+				
+			}
+
+			function clearBall() {
+				ctx.clearRect(0, 0, canvas.width, canvas.height);
+			}
+
+			// https://www.viget.com/articles/time-based-animation
+			 ctx.core = {
+ 				frame: function() {
+ 					ctx.core.setDelta();
+ 					ctx.core.update();
+ 					ctx.core.render();
+					ctx.core.animationFrame = window.requestAnimationFrame(ctx.core.frame);
+				},
+
+				setDelta: function() {
+					ctx.core.now = Date.now();
+					ctx.core.delta = (ctx.core.now - ctx.core.then) / 1000; // seconds since last frame
+			 		ctx.core.then = ctx.core.now;
+				},
+
+				update: function() {
+					// Update values
+					clearBall();
+					slowMove();
+					makeBall();
+					
+					// var distance = 100 * ctx.core.delta;
+					// ctx.thing.x += distance;
+				},
+				
+				render: function() {
+					// Render updates to browser (draw to canvas, update css, etc.)
+				}
+			};
+			ctx.core.frame();
+		</script>
+</html>

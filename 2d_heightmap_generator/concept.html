@@ -1,0 +1,316 @@
+<html>
+	<head>
+		<style>
+			.square {
+				width:50px;
+				display:inline-block;
+				font-size:14px;
+				
+			}
+			.smallsquare, .side {
+				width:35px;
+				display:inline-block;
+				font-size:12px;
+			}
+			.side {
+				background-color:red;
+			}
+			.smallbox {
+				display:inline-block;
+				width:7px;
+				height:7px;
+			}
+			canvas {
+				/*image-rendering: optimizeSpeed;             /* Older versions of FF          
+				image-rendering: -moz-crisp-edges;          /* FF 6.0+                       
+				image-rendering: -webkit-optimize-contrast; /* Safari                        
+				image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+				image-rendering: pixelated;                 /* Awesome future-browsers       */
+				-ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+			}
+		</style>
+	</head>
+	<body>
+		<div id="mathDiv">0</div>
+		<div id="value">0</div>
+		<div id="canvasDiv">
+			<div id="topStart"></div>
+			<div id="topEnd"></div>
+			<div id="sideStart"></div>
+			<div id="sideEnd"></div>
+			<canvas id="finalCanvas"></canvas>
+		</html>
+	</body>
+	
+	<script>
+			/* Cost of EHP
+		makeSidesArray(1.3, 6, .1, topTextA)
+		makeSidesArray(700, 5100, 100, sideTextA)
+		makeSidesArray(0, 9400, 200, topTextB)
+		makeSidesArray(0, 11483.333333, 266.666666, sideTextB)
+		
+		var d2array1=[];
+		var d2array2=[];
+		make2d(topTextA, sideTextA, d2array1, "*")
+		make2d(topTextB, sideTextB, d2array2, "+")
+		
+		var finalArray=[];
+		comparetwo2D(d2array2, d2array1, finalArray, "/")
+		draw2dA(finalArray);
+		addColorToIddDiv(finalArray, getBigestFrom2d(finalArray));
+		addLowestline(finalArray);
+	*/
+	var scalingFactor = 10;
+	var topTop = make1dArray(6,400,50);
+	var topSide = make1dArray(.7,2.5,50);
+	var botTop = make1dArray(0,8400,50);
+	var botSide = make1dArray(75,6725,50);
+	var topOperation = "*";
+	var sideOperation = "+";
+	var compareOperation = "/";
+	var finalArray = compare2darray(make2dArray(topTop, topSide, topOperation),make2dArray(botTop, botSide, sideOperation),compareOperation);
+	// var finalArray = compare2darray(make2dArray(make1dArray(1,5,40),make1dArray(1,5000,50), "*"), make2dArray(make1dArray(1,10000,40),make1dArray(1,13350,50),"+"), "/");
+	draw2d(finalArray, '+', scalingFactor, 'finalCanvas');
+
+	var canvas = document.getElementById('finalCanvas');
+	
+	function getMousePos(canvas, evt) {
+		var rect = canvas.getBoundingClientRect();
+		return {
+			x: evt.clientX - rect.left,
+			y: evt.clientY - rect.top
+		};
+	}
+	canvas.addEventListener('mousedown', function(evt) {
+		var mousePos = getMousePos(canvas, evt);
+		document.getElementById('value').innerHTML = finalArray[Math.floor(mousePos.x/scalingFactor)][Math.floor(mousePos.y/scalingFactor)];
+		document.getElementById('mathDiv').innerHTML = "( "+Math.round(topTop[Math.floor(mousePos.x/scalingFactor)]*1000)/1000+" "+topOperation+" "+Math.round(topSide[Math.floor(mousePos.y/scalingFactor)]*1000)/1000+" ) "+compareOperation+" ( "+Math.round(botTop[Math.floor(mousePos.x/scalingFactor)]*1000)/1000+" "+sideOperation+" "+Math.round(botSide[Math.floor(mousePos.y/scalingFactor)]*1000)/1000+" )";
+	}, false);
+
+
+	function draw2d(array, line, scalingfactor, canvasName){
+		var canvas = document.getElementById(canvasName);
+		var maxX = array[0].length;
+		var maxY = array.length;
+
+		var ctx = canvas.getContext('2d');
+		ctx.canvas.width = maxY;
+		ctx.canvas.height = maxX;
+		var imageData = ctx.getImageData(0, 0, maxY, maxX);
+		var reducedarray = reduce2dArray(array);
+		switch2dToPrinting(reducedarray, imageData.data);
+		if(line){
+			drawLine(array, imageData.data, line, "FF0000");
+		}
+		ctx.putImageData(imageData, 0, 0);
+		canvas.style.width = maxY*scalingfactor;
+		canvas.style.height = maxX*scalingfactor;
+	}
+	function drawLine(multiArray, canvasArray, line, color){
+		var x=0;
+		var y=0;
+		var red = (parseInt(color.substring(0,2), 16));
+		var green = (parseInt(color.substring(2,4), 16));
+		var blue = (parseInt(color.substring(4,6), 16));
+		canvasArray[0] = red;
+		canvasArray[1] = green;
+		canvasArray[2] = blue;
+
+		for(var i = 0; i < multiArray.length+multiArray[0].length; i++){
+			if(x < multiArray.length-1 && y < multiArray[0].length-1) {
+				if(line == '+'){
+					if(multiArray[x+1][y] > multiArray[x][y+1]){
+						var index = (y * multiArray.length + x + 1) * 4;
+						canvasArray[index] = red;
+						canvasArray[++index] = green;
+						canvasArray[++index] = blue;
+						x++;
+					} else {
+						var index = ((y+1) * multiArray.length + x) * 4;
+						canvasArray[index] = red;
+						canvasArray[++index] = green;
+						canvasArray[++index] = blue;
+						y++;
+					}
+				} else {
+					if(multiArray[x+1][y] < multiArray[x][y+1]){
+						var index = (y * multiArray.length + x + 1) * 4;
+						canvasArray[index] = red;
+						canvasArray[++index] = green;
+						canvasArray[++index] = blue;
+						x++;
+					} else {
+						var index = ((y+1) * multiArray.length + x) * 4;
+						canvasArray[index] = red;
+						canvasArray[++index] = green;
+						canvasArray[++index] = blue;
+						y++;
+					}
+				}
+			} else {
+				if(x == multiArray.length-1){
+					var index = ((y+1) * multiArray.length + x) * 4;
+					canvasArray[index] = red;
+					canvasArray[++index] = green;
+					canvasArray[++index] = blue;
+					y++;
+				} else {
+					var index = (y * multiArray.length + x + 1) * 4;
+					canvasArray[index] = red;
+					canvasArray[++index] = green;
+					canvasArray[++index] = blue;
+					x++;
+				}
+			}
+		}
+	}
+
+	function make1dArray(start, end, resolution){
+		var outputArray=[];
+		if(start < end){
+			for(var i = 0; i < resolution; i++){
+				outputArray[i] = (((end-start)/(resolution-1)) * (i)) + start;
+				console.log(i);
+			}
+		} else {
+			for(var i = 0; i < resolution; i++){
+				outputArray[i] = start - (((start-end)/(resolution-1)) * (i+1));
+				console.log(i);
+			}
+		}
+		return outputArray;
+	}
+	
+	function make2dArray(xArray, yArray, operation){
+		console.log("Creating 2d Array")
+		var outputArray=[];
+		if(operation){
+			for(var x=0; x < xArray.length; x++) {
+				outputArray[x]=[];
+				for(var y=0; y < yArray.length; y++){
+					var outputNum = 0;
+					switch(operation){
+						case "+":
+							outputNum = xArray[x]+yArray[y];
+							break;
+						case "-":
+							outputNum = xArray[x]-yArray[y];
+							break;
+						case "*":
+							outputNum = xArray[x]*yArray[y];
+							break;
+						case "/":
+							outputNum = xArray[x]/yArray[y];
+							break;
+						default:
+							console.log("Add the operation to make2dArray()");
+					}
+					outputArray[x][y] = outputNum;
+				}
+			}
+		}
+		return outputArray;
+	}
+
+	function compare2darray(topArray, botArray, operation){
+		console.log("Comparing 2d Array's");
+		if(operation){
+			var outputArray=[];
+			for(var x=0; x < topArray.length; x++) {
+				outputArray[x]=[];
+				for(var y=0; y < topArray[0].length; y++){
+					var outputNum = 0;
+					switch(operation){
+						case "+":
+							outputNum = topArray[x][y]+botArray[x][y];
+							break;
+						case "-":
+							outputNum = topArray[x][y]-botArray[x][y];
+							break;
+						case "*":
+							outputNum = topArray[x][y]*botArray[x][y];
+							break;
+						case "/":
+							outputNum = topArray[x][y]/botArray[x][y];
+							break;
+						default:
+							console.log("Add the operation to compare2darray()");
+					}
+					outputArray[x][y] = outputNum;
+				}
+			}
+		}
+		return outputArray;
+	}
+
+
+	function getBiggestFrom2d(array){
+		var biggest = 0;
+		for(var i = 0; i < array.length; i++) {
+			var tempBiggest = Math.max.apply(Math, array[i]);
+			if(tempBiggest > biggest){
+				biggest = tempBiggest;
+			}
+		}
+		return biggest;
+	}
+	function reduce2dArray(array){
+		var outputArray = [];
+		var biggestFrac = getBiggestFrom2d(array)/255;
+		for(var x = 0; x < array.length; x++) {
+			outputArray[x] = [];
+			for(var y = 0; y < array[0].length; y++){
+				outputArray[x][y]=array[x][y]/biggestFrac;
+			}
+		}
+		return outputArray;
+	}
+	function switch2dToPrinting(array, outputArray){
+		for(var x = 0; x < array.length; x++){
+			for(var y = 0; y < array[0].length; y++){
+				var index = (y * array.length + x) * 4;
+				var value = array[x][y];
+				outputArray[index] = value;
+				outputArray[++index] = value;
+				outputArray[++index] = value;
+				outputArray[++index] = 255;
+			}
+		}
+	}
+	/*	Twitch Gold worth of AS vs AD
+	
+		makeSidesArray(60, 300, 4, topTextA)
+		makeSidesArray(.7, 2.5, .0544, sideTextA)
+		makeSidesArray(0, 8400, 140, topTextB)
+		makeSidesArray(75, 6725, 200, sideTextB)
+		
+		var d2array1=[];
+		var d2array2=[];
+		make2d(topTextA, sideTextA, d2array1, "*")
+		make2d(topTextB, sideTextB, d2array2, "+")
+		
+		var finalArray=[];
+		comparetwo2D(d2array2, d2array1, finalArray, "/")
+		draw2dA(finalArray);
+		addColorToIddDiv(finalArray, getBigestFrom2d(finalArray));
+		addLowestline(finalArray);
+	*/
+	/* Cost of EHP
+		makeSidesArray(1.3, 6, .1, topTextA)
+		makeSidesArray(700, 5100, 100, sideTextA)
+		makeSidesArray(0, 9400, 200, topTextB)
+		makeSidesArray(0, 11483.333333, 266.666666, sideTextB)
+		
+		var d2array1=[];
+		var d2array2=[];
+		make2d(topTextA, sideTextA, d2array1, "*")
+		make2d(topTextB, sideTextB, d2array2, "+")
+		
+		var finalArray=[];
+		comparetwo2D(d2array2, d2array1, finalArray, "/")
+		draw2dA(finalArray);
+		addColorToIddDiv(finalArray, getBigestFrom2d(finalArray));
+		addLowestline(finalArray);
+	*/
+	</script>
+<html>
